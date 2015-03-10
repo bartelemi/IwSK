@@ -4,25 +4,30 @@ Interfejsy w Systemach Komputerowych - Komunikacja przez port znakowy
 #############################################################################################################################
 
 PROWADZĄCY
+
   Wojciech Mielczarek
 
 CELE LABORATORIUM
+
   Celem ćwiczenia jest praktyczne poznanie zasad komunikacji urządzeń za pośrednictwem interfejsu RS-232, protokołów 
   komunikacyjnych opartych na łączu znakowym oraz budowy i programowania kontrolera interfejsu szeregowego w komputerze PC.
   
 TREŚĆ LABORATORIUM
+  
   Ćwiczenie obejmuje napisanie i uruchomienie dwóch programów kontrolujących komunikację na szeregowym łączu znakowym.
   Pierwszy program obsługuje transmisję pomiędzy dwoma urządzeniami DTE (np. komputerami lub komputerem i urządzeniem
   pomiarowym) połączonymi kablem połączenia bezmodemowego. Drugi program nadzoruje pracę systemu (sieci obiektowej) 
   opartego na magistrali RS-485 i protokole MODBUS.
 
 LITERATURA
+  
   1. W. Mielczarek: Szeregowe interfejsy cyfrowe, Helion 1993
   2. W. Mielczarek: Urządzenia i systemy kompatybilne ze standardem SCPI, Helion 1999
   3. W. Mielczarek: Tłumienie zakłóceń i ochrona informacji w systemach pomiarowych, 
      skrypt Politechniki Śląskiej nr 1921, Gliwice 1995
 
 NARZĘDZIA
+  
   Stanowisko laboratoryjne składające się z następujących urządzeń:
   - trzech komputerów wyposażonych w porty RS-232,
   - urządzenia pomiarowego wyposażonego w port RS-232,
@@ -84,22 +89,22 @@ Testowanie programu
   funkcjonalności. Każda sekcja musi dysponować własnym kablem połączeniowym
   wykonanym zgodnie ze specyfikacją przedstawioną na rys.1.
 
-             DTE                                                  DTE
-       ______________                                        ______________
-      |           TxD| ---------------->>>----------------  |RxD           | 
-      |           RxD| ----------------<<<----------------  |TxD           | 
-      |              |                                      |              |
-      |           DTR| ---------------->>>----------------  |DSR           | 
-      |           DSR| ----------------<<<----------------  |DTR           | 
-      |              |                                      |              |
-      |           RTS| ---------------->>>----------------  |CTS           | 
-      |           CTS| ----------------<<<----------------  |RTS           | 
-      |              |                                      |              |
-      |            SG| -----------------------------------  |SG            | 
-      |______________|                                      |______________|
-      
-                  Rys.1. Połączenie bezpośrednie („bezmodemowe”). 
-                  Kabel zakończony złączami DB9F po obu stronach.
+                                   DTE                                                  DTE
+                             ______________                                        ______________
+                            |           TxD| ---------------->>>----------------  |RxD           | 
+                            |           RxD| ----------------<<<----------------  |TxD           | 
+                            |              |                                      |              |
+                            |           DTR| ---------------->>>----------------  |DSR           | 
+                            |           DSR| ----------------<<<----------------  |DTR           | 
+                            |              |                                      |              |
+                            |           RTS| ---------------->>>----------------  |CTS           | 
+                            |           CTS| ----------------<<<----------------  |RTS           | 
+                            |              |                                      |              |
+                            |            SG| -----------------------------------  |SG            | 
+                            |______________|                                      |______________|
+                            
+                                        Rys.1. Połączenie bezpośrednie („bezmodemowe”). 
+                                        Kabel zakończony złączami DB9F po obu stronach.
 
 #############################################################################################################################
 OBSŁUGA KOMUNIKACJI POMIĘDZY STACJAMI SYSTEMU MODBUS PRACUJĄCYMI W TRYBIE ASCII LUB RTU
