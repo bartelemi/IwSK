@@ -1,0 +1,4 @@
+D:\Git\IwSK\RS485\RS485.Master.Serial\bin\Debug\RS485.Master.Serial.dll
+D:\Git\IwSK\RS485\RS485.Master.Serial\bin\Debug\RS485.Master.Serial.pdb
+D:\Git\IwSK\RS485\RS485.Master.Serial\obj\Debug\RS485.Master.Serial.dll
+D:\Git\IwSK\RS485\RS485.Master.Serial\obj\Debug\RS485.Master.Serial.pdb

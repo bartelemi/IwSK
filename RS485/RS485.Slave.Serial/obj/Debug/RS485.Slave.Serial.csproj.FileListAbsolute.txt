@@ -1,0 +1,4 @@
+D:\Git\IwSK\RS485\RS485.Slave.Serial\bin\Debug\RS485.Slave.Serial.dll
+D:\Git\IwSK\RS485\RS485.Slave.Serial\bin\Debug\RS485.Slave.Serial.pdb
+D:\Git\IwSK\RS485\RS485.Slave.Serial\obj\Debug\RS485.Slave.Serial.dll
+D:\Git\IwSK\RS485\RS485.Slave.Serial\obj\Debug\RS485.Slave.Serial.pdb
