@@ -1,0 +1,6 @@
+D:\Git\IwSK\ANTLRTest\ANTLRTest\obj\Debug\BIBGrammarLexer.cs
+D:\Git\IwSK\ANTLRTest\ANTLRTest\obj\Debug\BIBGrammarParser.cs
+D:\Git\IwSK\ANTLRTest\ANTLRTest\obj\Debug\BIBGrammarListener.cs
+D:\Git\IwSK\ANTLRTest\ANTLRTest\obj\Debug\BIBGrammarBaseListener.cs
+D:\Git\IwSK\ANTLRTest\ANTLRTest\obj\Debug\BIBGrammarVisitor.cs
+D:\Git\IwSK\ANTLRTest\ANTLRTest\obj\Debug\BIBGrammarBaseVisitor.cs
