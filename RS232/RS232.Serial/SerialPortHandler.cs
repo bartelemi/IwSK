@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace RS232.Serial
 
             if (properties.AppendDateTime)
             {
-                sb.Append(string.Format("<Italic>{0:dd/MM/yy HH:mm:ss} > <Italic>", DateTime.Now));
+                sb.Append(string.Format("{0:dd/MM/yy HH:mm:ss} > ", DateTime.Now));
             }
 
             #endregion Append date time
@@ -61,11 +62,31 @@ namespace RS232.Serial
                 default:
                     sb.Append('\r');
                     sb.Append('\n');
+                    break;
             }
 
             #endregion Append terminator
 
             return sb.ToString();
+        }
+
+        public bool Connect()
+        {
+            SerialPort serialPort = new SerialPort();
+            serialPort.BaudRate = 1;
+            serialPort.DataBits = 8;
+            serialPort.Handshake = Handshake.None;
+            serialPort.StopBits = StopBits.Two;
+
+            try
+            {
+                serialPort.Open();
+            }
+            catch (Exception)
+            {
+                
+            }
+            return false;
         }
     }
 }

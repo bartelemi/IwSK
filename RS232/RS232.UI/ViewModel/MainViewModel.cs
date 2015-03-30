@@ -1,3 +1,4 @@
+using System.Text;
 using GalaSoft.MvvmLight;
 using RS232.Serial.Model;
 
@@ -6,12 +7,13 @@ namespace RS232.UI.ViewModel
     /// <summary>
     /// This class contains properties that the main View can data bind to.
     /// </summary>
-    public class MainViewModel : ViewModelBase
+    public partial class MainViewModel : ViewModelBase
     {
         #region Fields
 
         private int _portNumber;
         private BitRate _bitRate;
+        private string _messageText;
         private bool _appendDateTime; 
         private Terminator _terminator;
         private string _customTerminator;
@@ -19,6 +21,7 @@ namespace RS232.UI.ViewModel
         private FlowControl _flowControl;
         private Transmission _transmission;
         private CharacterFormat _characterFormat;
+        private StringBuilder _receivedMessages = new StringBuilder();
 
         #endregion Fields
 
@@ -47,6 +50,19 @@ namespace RS232.UI.ViewModel
             { 
                 _bitRate = value; 
                 RaisePropertyChanged(); 
+            }
+        }
+
+        /// <summary>
+        /// Text of message to be send
+        /// </summary>
+        public string MessageText
+        {
+            get { return _messageText; }
+            set
+            {
+                _messageText = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -96,7 +112,6 @@ namespace RS232.UI.ViewModel
                 RaisePropertyChanged();
             }
         }
-
 
         /// <summary>
         /// Holds name of selected serial port
@@ -150,6 +165,22 @@ namespace RS232.UI.ViewModel
             }
         }
 
+        /// <summary>
+        /// Text of message to be send
+        /// </summary>
+        public string ReceivedMessages
+        {
+            get { return _receivedMessages.ToString(); }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    _receivedMessages.Append(value);
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         #endregion Properties
 
         #region Initialization
@@ -160,6 +191,7 @@ namespace RS232.UI.ViewModel
         public MainViewModel()
         {
             InitProperties();
+            InitCommands();
         }
 
         /// <summary>

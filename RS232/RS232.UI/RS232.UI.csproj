@@ -109,6 +109,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <Compile Include="ViewModel\MainViewModel.Commands.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -121,6 +122,17 @@
       <Project>{a8222d61-bf8c-4184-b514-8498c4a2ad5f}</Project>
       <Name>RS232.Serial</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\send.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\clean.png" />
+    <Resource Include="Resources\ping.png" />
+    <Resource Include="Resources\transaction.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

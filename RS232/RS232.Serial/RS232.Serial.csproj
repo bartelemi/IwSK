@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\ConnectionState.cs" />
     <Compile Include="Model\MessageProperties.cs" />
     <Compile Include="Model\BitRate.cs" />
     <Compile Include="Model\CharacterFormat.cs" />

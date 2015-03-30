@@ -43,27 +43,59 @@
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    
+
                     <TextBox Grid.Column="0" Margin="5"
                              FontSize="14" FontFamily="Consolas"
-                             Text="Napisz coś tutaj"/>
+                             Text="{Binding MessageText}"/>
 
                     <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" Margin="5">
                         <StackPanel VerticalAlignment="Center">
-                            <Button Content="Wyślij" Width="75" Margin="5"/>
-                            <Button Content="Odbierz" Width="75" Margin="5"/>
-                            <Button Content="Transakcja" Width="75" Margin="5"/>
-                            <Button Content="Ping" Width="50" Margin="5 50 5 5"/>
+                            <Button Command="{Binding SendCommand}"
+                                    Height="30" Padding="0" Margin="5">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="../Resources/send.png"/>
+                                        <Label Content="Wyślij"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Command="{Binding TransactionCommand}"
+                                    Height="30" Padding="0" Margin="5">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="../Resources/transaction.png"/>
+                                        <Label Content="Transakcja"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Command="{Binding PingCommand}"
+                                    Height="30" Padding="0" Margin="5">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="../Resources/ping.png"/>
+                                        <Label Content="Ping"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Command="{Binding ClearMessageTextCommand}"
+                                    Height="30" Padding="0" Margin="5 15 5 5">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="../Resources/clean.png"/>
+                                        <Label Content="Wyczyść"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
                         </StackPanel>
                     </Border>
-                    
+
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
                                 Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <ToggleButton Content="DTR" Width="50" Margin="0  5 10 5"/>
                         <ToggleButton Content="DSR" Width="50" Margin="10 5 10 5"/>
                         <ToggleButton Content="RTS" Width="50" Margin="10 5 10 5"/>
                         <ToggleButton Content="CTS" Width="50" Margin="10 5 10 5"/>
-                        <CheckBox Margin="20 9 0 9" Content="Dołącz datę"/>
+                        <CheckBox IsChecked="{Binding AppendDateTime}" Margin="20 9 0 9" Content="Dołącz datę"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -72,10 +104,7 @@
 
             <Border Grid.Row="3" BorderBrush="Black" BorderThickness="2" Background="PeachPuff">
                 <Grid Margin="5">
-                    <TextBlock FontSize="14" FontFamily="Consolas">
-                <Run FontStyle="Italic" Text="23.03.15 15:23 >"/>
-                <Run Text=" Tutaj pojawią się odebrane wiadomości"/>
-                    </TextBlock>
+                    <TextBlock Text="{Binding ReceivedMessages}" FontSize="14" FontFamily="Consolas"/>
                 </Grid>
             </Border>
         </Grid>
@@ -90,7 +119,7 @@
                         <ComboBox ItemsSource="{Binding SerialPortNames}"
                                   SelectedValue="{Binding SelectedPortName}"
                                   SelectedValuePath="Value"/>
-                        
+
                         <Label Content="Prędkość transmisji"/>
                         <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:BitRate}}}"
                                   DisplayMemberPath="Description"
@@ -116,24 +145,25 @@
                                   DisplayMemberPath="Description"
                                   SelectedValue="{Binding FlowControl}"
                                   SelectedValuePath="Value"/>
-                        
+
                         <Label Content="Terminator"/>
                         <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:Terminator}}}"
                                   DisplayMemberPath="Description"
                                   SelectedValue="{Binding Terminator}"
                                   SelectedValuePath="Value"/>
                         <TextBox Text="{Binding CustomTerminator}"
-                                 Visibility="{Binding Terminator, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Custom}"/>    
+                                 Visibility="{Binding Terminator, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Custom}"/>
                     </StackPanel>
                 </GroupBox>
-                
+
                 <Label Content="Typ transmisji"/>
                 <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:Transmission}}}"
                           DisplayMemberPath="Description"
                           SelectedValue="{Binding Transmission}"
-                          SelectedValuePath="Value"/>
-                
-                <Button Content="Autobauding"/>
+                          SelectedValuePath="Value"
+                          Margin="5"/>
+
+                <Button Content="Autobauding" Margin="5 25 5 5"/>
             </StackPanel>
         </Grid>
 
