@@ -68,6 +68,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converter\EnumToVisibilityConverter.cs" />
     <Compile Include="Extension\EnumExtension.cs" />
     <Compile Include="Model\CharacterFormat.cs" />
     <Compile Include="Model\FlowControl.cs" />

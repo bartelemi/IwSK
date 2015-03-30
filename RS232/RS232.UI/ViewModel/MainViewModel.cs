@@ -13,6 +13,8 @@ namespace RS232.UI.ViewModel
         private int _portNumber;
         private BitRate _bitRate;
         private Terminator _terminator;
+        private string _customTerminator;
+        private string _selectedPortName;
         private FlowControl _flowControl;
         private Transmission _transmission;
         private CharacterFormat _characterFormat;
@@ -27,7 +29,11 @@ namespace RS232.UI.ViewModel
         public int PortNumber
         {
             get { return _portNumber; }
-            set { _portNumber = value; }
+            set
+            {
+                _portNumber = value;
+                RaisePropertyChanged();
+            }
         }
 
         /// <summary>
@@ -36,7 +42,11 @@ namespace RS232.UI.ViewModel
         public BitRate BitRate
         {
             get { return _bitRate; }
-            set { _bitRate = value; }
+            set 
+            { 
+                _bitRate = value; 
+                RaisePropertyChanged(); 
+            }
         }
 
         /// <summary>
@@ -45,7 +55,46 @@ namespace RS232.UI.ViewModel
         public Terminator Terminator
         {
             get { return _terminator; }
-            set { _terminator = value; }
+            set
+            {
+                _terminator = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Returns collection of serial ports names
+        /// </summary>
+        public string[] SerialPortNames
+        {
+            get { return System.IO.Ports.SerialPort.GetPortNames(); }
+        }
+
+        /// <summary>
+        /// Custom terminator text
+        /// </summary>
+        public string CustomTerminator
+        {
+            get { return _customTerminator; }
+            set
+            {
+                _customTerminator = value.Substring(0, 2);
+                RaisePropertyChanged();
+            }
+        }
+
+
+        /// <summary>
+        /// Holds name of selected serial port
+        /// </summary>
+        public string SelectedPortName
+        {
+            get { return _selectedPortName; }
+            set
+            {
+                _selectedPortName = value; 
+                RaisePropertyChanged();
+            }
         }
 
         /// <summary>
@@ -54,7 +103,11 @@ namespace RS232.UI.ViewModel
         public FlowControl FlowControl
         {
             get { return _flowControl; }
-            set { _flowControl = value; }
+            set
+            {
+                _flowControl = value;
+                RaisePropertyChanged();
+            }
         }
 
         /// <summary>
@@ -63,7 +116,11 @@ namespace RS232.UI.ViewModel
         public Transmission Transmission
         {
             get { return _transmission; }
-            set { _transmission = value; }
+            set
+            {
+                _transmission = value;
+                RaisePropertyChanged();
+            }
         }
 
         /// <summary>
@@ -72,7 +129,11 @@ namespace RS232.UI.ViewModel
         public CharacterFormat CharacterFormat
         {
             get { return _characterFormat; }
-            set { _characterFormat = value; }
+            set
+            {
+                _characterFormat = value;
+                RaisePropertyChanged();
+            }
         }
 
         #endregion Properties

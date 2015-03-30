@@ -3,8 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converter="clr-namespace:RS232.UI.Converter"
              d1p1:Ignorable="d">
-  <Application.Resources>
-    <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:RS232.UI.ViewModel" />
-  </Application.Resources>
+    <Application.Resources>
+        <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:RS232.UI.ViewModel" />
+        <converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+    </Application.Resources>
 </Application>
