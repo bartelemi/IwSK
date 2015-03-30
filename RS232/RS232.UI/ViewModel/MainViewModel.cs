@@ -1,5 +1,5 @@
 using GalaSoft.MvvmLight;
-using RS232.UI.Model;
+using RS232.Serial.Model;
 
 namespace RS232.UI.ViewModel
 {
@@ -12,6 +12,7 @@ namespace RS232.UI.ViewModel
 
         private int _portNumber;
         private BitRate _bitRate;
+        private bool _appendDateTime; 
         private Terminator _terminator;
         private string _customTerminator;
         private string _selectedPortName;
@@ -46,6 +47,19 @@ namespace RS232.UI.ViewModel
             { 
                 _bitRate = value; 
                 RaisePropertyChanged(); 
+            }
+        }
+
+        /// <summary>
+        /// Defines if date and time should added at the begining of the message
+        /// </summary>
+        public bool AppendDateTime
+        {
+            get { return _appendDateTime; }
+            set
+            {
+                _appendDateTime = value;
+                RaisePropertyChanged();
             }
         }
 

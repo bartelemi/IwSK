@@ -27,3 +27,5 @@ D:\Git\IwSK\RS232\RS232.UI\obj\Debug\RS232.UI.exe
 D:\Git\IwSK\RS232\RS232.UI\obj\Debug\RS232.UI.pdb
 D:\Git\IwSK\RS232\RS232.UI\obj\Debug\View\MainWindow.g.cs
 D:\Git\IwSK\RS232\RS232.UI\obj\Debug\View\MainWindow.baml
+D:\Git\IwSK\RS232\RS232.UI\bin\Debug\RS232.Serial.dll
+D:\Git\IwSK\RS232\RS232.UI\bin\Debug\RS232.Serial.pdb

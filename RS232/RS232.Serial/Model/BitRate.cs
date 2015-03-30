@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RS232.UI.Model
+namespace RS232.Serial.Model
 {
     /// <summary>
     /// Specifies transmission speed in bits per second

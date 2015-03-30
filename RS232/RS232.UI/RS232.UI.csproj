@@ -70,12 +70,6 @@
     </ApplicationDefinition>
     <Compile Include="Converter\EnumToVisibilityConverter.cs" />
     <Compile Include="Extension\EnumExtension.cs" />
-    <Compile Include="Model\CharacterFormat.cs" />
-    <Compile Include="Model\FlowControl.cs" />
-    <Compile Include="Model\Transmission.cs" />
-    <Compile Include="Model\Terminator.cs" />
-    <Compile Include="Model\TransmissionControl.cs" />
-    <Compile Include="Model\BitRate.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="View\MainWindow.xaml">
@@ -121,6 +115,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RS232.Serial\RS232.Serial.csproj">
+      <Project>{a8222d61-bf8c-4184-b514-8498c4a2ad5f}</Project>
+      <Name>RS232.Serial</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

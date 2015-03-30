@@ -26,3 +26,18 @@
 *.exe
 *.out
 *.app
+
+# Directiries
+RS232/RS232.UI/bin
+RS232/RS232.UI/obj
+RS232/RS232.Serial/bin
+RS232/RS232.Serial/obj
+
+RS485/RS485.UI/bin
+RS485/RS485.UI/obj
+RS485/RS485.Common/bin
+RS485/RS485.Common/obj
+RS485/RS485.Slave.Serial/bin
+RS485/RS485.Slave.Serial/obj
+RS485/RS485.Master.Serial/bin
+RS485/RS485.Master.Serial/obj

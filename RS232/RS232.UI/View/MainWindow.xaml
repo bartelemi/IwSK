@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converter="clr-namespace:RS232.UI.Converter"
         xmlns:extensions="clr-namespace:RS232.UI.Extension"
-        xmlns:model="clr-namespace:RS232.UI.Model"
+        xmlns:model="clr-namespace:RS232.Serial.Model;assembly=RS232.Serial"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
@@ -58,11 +58,12 @@
                     </Border>
                     
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
-                                Orientation="Horizontal" HorizontalAlignment="Center">
+                                Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <ToggleButton Content="DTR" Width="50" Margin="0  5 10 5"/>
                         <ToggleButton Content="DSR" Width="50" Margin="10 5 10 5"/>
                         <ToggleButton Content="RTS" Width="50" Margin="10 5 10 5"/>
-                        <ToggleButton Content="CTS" Width="50" Margin="10 5 0  5"/>
+                        <ToggleButton Content="CTS" Width="50" Margin="10 5 10 5"/>
+                        <CheckBox Margin="20 9 0 9" Content="Dołącz datę"/>
                     </StackPanel>
                 </Grid>
             </Border>
