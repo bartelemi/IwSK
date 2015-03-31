@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace RS232.Serial.Model
 {
     /// <summary>
-    /// Type of transmission
+    /// Input type for messages
     /// </summary>
-    public enum Transmission
+    public enum InputType
     {
         [Description("Binarna")]
         Binary,

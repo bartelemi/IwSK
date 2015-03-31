@@ -19,7 +19,7 @@ namespace RS232.UI.ViewModel
         private string _customTerminator;
         private string _selectedPortName;
         private FlowControl _flowControl;
-        private Transmission _transmission;
+        private InputType _inputType;
         private CharacterFormat _characterFormat;
         private StringBuilder _receivedMessages = new StringBuilder();
 
@@ -140,14 +140,14 @@ namespace RS232.UI.ViewModel
         }
 
         /// <summary>
-        /// Type of transmission (text/binary)
+        /// Input type for messages (text/binary)
         /// </summary>
-        public Transmission Transmission
+        public InputType InputType
         {
-            get { return _transmission; }
+            get { return _inputType; }
             set
             {
-                _transmission = value;
+                _inputType = value;
                 RaisePropertyChanged();
             }
         }
@@ -202,7 +202,7 @@ namespace RS232.UI.ViewModel
             BitRate = BitRate.BR_115200;
             Terminator = Terminator.CRLF;
             FlowControl = FlowControl.None;
-            Transmission = Transmission.Text;
+            InputType = InputType.Text;
             CharacterFormat = new CharacterFormat
             {
                 StopBits = 2,

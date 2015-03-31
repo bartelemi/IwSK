@@ -48,7 +48,7 @@
                              FontSize="14" FontFamily="Consolas"
                              Text="{Binding MessageText}"/>
 
-                    <Border Grid.Column="1" BorderBrush="Black" BorderThickness="2" Margin="5">
+                    <Border Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="2" Margin="5">
                         <StackPanel VerticalAlignment="Center">
                             <Button Command="{Binding SendCommand}"
                                     Height="30" Padding="0" Margin="5">
@@ -77,8 +77,28 @@
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
+                            <Button Command="{Binding InputTypeCommand}"
+                                    Height="30" Padding="0" Margin="5 15 5 5"
+                                    Visibility="{Binding InputType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Text}">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="../Resources/ABC.png"/>
+                                        <Label Content="Tekst"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Command="{Binding InputTypeCommand}"
+                                    Height="30" Padding="0" Margin="5 15 5 5"
+                                    Visibility="{Binding InputType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Binary}">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="../Resources/0xFF.png"/>
+                                        <Label Content="Hex"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
                             <Button Command="{Binding ClearMessageTextCommand}"
-                                    Height="30" Padding="0" Margin="5 15 5 5">
+                                    Height="30" Padding="0" Margin="5">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="../Resources/clean.png"/>
@@ -156,14 +176,7 @@
                     </StackPanel>
                 </GroupBox>
 
-                <Label Content="Typ transmisji"/>
-                <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:Transmission}}}"
-                          DisplayMemberPath="Description"
-                          SelectedValue="{Binding Transmission}"
-                          SelectedValuePath="Value"
-                          Margin="5"/>
-
-                <Button Content="Autobauding" Margin="5 25 5 5"/>
+                <Button Content="Autobauding" Margin="5 50 5 5"/>
             </StackPanel>
         </Grid>
 

@@ -12,12 +12,13 @@ namespace RS232.UI.ViewModel
     public partial class MainViewModel
     {
         #region Commands
-        
+
         public RelayCommand SendCommand { get; private set; }
         public RelayCommand TransactionCommand { get; private set; }
         public RelayCommand PingCommand { get; private set; }
+        public RelayCommand InputTypeCommand { get; private set; }
         public RelayCommand ClearMessageTextCommand { get; private set; }
-        
+
         #endregion Commands
 
         #region Initialize commands
@@ -26,6 +27,7 @@ namespace RS232.UI.ViewModel
             InitSendCommand();
             InitTransactionCommand();
             InitPingCommand();
+            InitInputTypeCommand();
             InitClearMessageTextCommand();
         }
 
@@ -40,7 +42,7 @@ namespace RS232.UI.ViewModel
                     CustomTerminator = CustomTerminator
                 };
                 var communicator = new SerialPortHandler();
-                ReceivedMessages = communicator.CreateMessage(MessageText, properties);
+                communicator.SendMessage(new ConnectionSettings(), new MessageProperties(), MessageText);
             });
         }
 
@@ -55,6 +57,22 @@ namespace RS232.UI.ViewModel
         {
             PingCommand = new RelayCommand(() =>
             {
+            });
+        }
+
+        private void InitInputTypeCommand()
+        {
+            InputTypeCommand = new RelayCommand(() =>
+            {
+                switch (InputType)
+                {
+                    case InputType.Binary:
+                        InputType = InputType.Text;
+                        break;
+                    case InputType.Text:
+                        InputType = InputType.Binary;
+                        break;
+                }
             });
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,9 @@ namespace RS232.Serial
         /// <param name="message">Text message to send</param>
         /// <param name="properties">Parameters of message</param>
         /// <returns>Fully configured message</returns>
-        public string CreateMessage(string message, MessageProperties properties)
+        private string CreateMessage(string message, MessageProperties properties)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             #region Append date time
 
@@ -70,23 +71,69 @@ namespace RS232.Serial
             return sb.ToString();
         }
 
-        public bool Connect()
+        private void Connect(ConnectionSettings connectionSettings, SerialPort port)
         {
-            SerialPort serialPort = new SerialPort();
-            serialPort.BaudRate = 1;
-            serialPort.DataBits = 8;
-            serialPort.Handshake = Handshake.None;
-            serialPort.StopBits = StopBits.Two;
+            if(port.IsOpen)
+                throw new UnauthorizedAccessException();
 
-            try
+            port.PortName = connectionSettings.PortName;
+            port.BaudRate = (int)(connectionSettings.BitRate);
+            port.DataBits = connectionSettings.DataBits;
+            //port.StopBits = connectionSettings.StopBits;
+            //port.Parity = connectionSettings.CharacterFormat;
+
+            port.Open();
+        }
+
+        /// <summary>
+        /// Sends message through serial port
+        /// </summary>
+        /// <param name="connectionSettings">Settings for connection</param>
+        /// <param name="messageProperties">Parameters of message</param>
+        /// <param name="message">Message plain text</param>
+        public void SendMessage(ConnectionSettings connectionSettings, MessageProperties messageProperties, string message)
+        {
+            using (var serialPort = new SerialPort())
             {
-                serialPort.Open();
+                try
+                {
+                    Connect(connectionSettings, serialPort);
+                    var preparedMessage = CreateMessage(message, messageProperties);
+
+                    serialPort.DiscardOutBuffer();
+                    serialPort.DiscardInBuffer();
+
+                    serialPort.Write(preparedMessage);
+
+                    serialPort.DiscardOutBuffer();
+                    serialPort.DiscardInBuffer();
+                }
+                catch (InvalidOperationException invOpEx)
+                {
+                    Console.WriteLine("Exception: Port isn't open.");
+                    throw;
+                }
+                catch (TimeoutException tmoutEx)
+                {
+                    Console.WriteLine("Exception: Timeout.");
+                    throw;
+                }
+                catch (UnauthorizedAccessException unAccEx)
+                {
+                    Console.WriteLine("Exception: Access to port denied.");
+                    throw;
+                }
+                catch (EndOfStreamException eosEX)
+                {
+                    Console.WriteLine("Exception: End of stream.");
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception: Unknown error.");
+                    throw;
+                }
             }
-            catch (Exception)
-            {
-                
-            }
-            return false;
         }
     }
 }
