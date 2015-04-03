@@ -12,14 +12,18 @@ namespace RS232.Serial.Model
     /// </summary>
     public enum ConnectionState
     {
-        [Description("Automatyczne konfigurowanie. . .")]
+        [Description("Automatyczne konfigurowanie połączenia. . .")]
         Autobauding,
-        [Description("Połączono")]
-        Connected,
         [Description("Ustanawianie połączenia. . .")]
         Connecting,
+        [Description("Połączono")]
+        Connected,
+        [Description("Nasłuchuję. . .")]
+        Listening,
         [Description("Rozłączono")]
         Disconnected,
+        [Description("Wysyłanie")]
+        Sending,
         [Description("Błąd")]
         Error
     }

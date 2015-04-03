@@ -14,13 +14,14 @@ namespace RS232.UI.ViewModel
         private int _portNumber;
         private BitRate _bitRate;
         private string _messageText;
+        private InputType _inputType; 
         private bool _appendDateTime; 
         private Terminator _terminator;
         private string _customTerminator;
         private string _selectedPortName;
         private FlowControl _flowControl;
-        private InputType _inputType;
         private CharacterFormat _characterFormat;
+        private ConnectionState _connectionState;
         private StringBuilder _receivedMessages = new StringBuilder();
 
         #endregion Fields
@@ -62,6 +63,19 @@ namespace RS232.UI.ViewModel
             set
             {
                 _messageText = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Input type for messages (text/binary)
+        /// </summary>
+        public InputType InputType
+        {
+            get { return _inputType; }
+            set
+            {
+                _inputType = value;
                 RaisePropertyChanged();
             }
         }
@@ -125,7 +139,7 @@ namespace RS232.UI.ViewModel
                 RaisePropertyChanged();
             }
         }
-
+        
         /// <summary>
         /// Type of communication flow control
         /// </summary>
@@ -138,20 +152,7 @@ namespace RS232.UI.ViewModel
                 RaisePropertyChanged();
             }
         }
-
-        /// <summary>
-        /// Input type for messages (text/binary)
-        /// </summary>
-        public InputType InputType
-        {
-            get { return _inputType; }
-            set
-            {
-                _inputType = value;
-                RaisePropertyChanged();
-            }
-        }
-
+        
         /// <summary>
         /// Format of single character to send
         /// </summary>
@@ -181,6 +182,19 @@ namespace RS232.UI.ViewModel
             }
         }
 
+        /// <summary>
+        /// Current state of connection
+        /// </summary>
+        public ConnectionState ConnectionState
+        {
+            get { return _connectionState; }
+            set
+            {
+                _connectionState = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #endregion Properties
 
         #region Initialization
@@ -199,6 +213,8 @@ namespace RS232.UI.ViewModel
         /// </summary>
         private void InitProperties()
         {
+            AppendDateTime = false;
+
             BitRate = BitRate.BR_115200;
             Terminator = Terminator.CRLF;
             FlowControl = FlowControl.None;
@@ -209,6 +225,10 @@ namespace RS232.UI.ViewModel
                 DataFieldSize = 8,
                 ControlType = TransmissionControl.None
             };
+
+            MessageText = "Wpisz tu swoj¹ wiadomoœæ!";
+
+            ConnectionState = ConnectionState.Disconnected;
         }
 
         #endregion Initialization

@@ -69,6 +69,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converter\EnumToVisibilityConverter.cs" />
+    <Compile Include="Converter\EnumValueToEnumDescriptionConverter.cs" />
     <Compile Include="Extension\EnumExtension.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

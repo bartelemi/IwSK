@@ -7,6 +7,7 @@
              d1p1:Ignorable="d">
     <Application.Resources>
         <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:RS232.UI.ViewModel" />
-        <converter:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+        <converter:EnumToVisibilityConverter x:Key="EnumToVisibility" />
+        <converter:EnumValueToEnumDescriptionConverter x:Key="EnumValueToEnumDescription"/>
     </Application.Resources>
 </Application>
