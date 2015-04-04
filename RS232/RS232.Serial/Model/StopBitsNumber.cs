@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 namespace RS232.Serial.Model
 {
     /// <summary>
-    /// Type of transmission control
+    /// Number of stop bits after every character
     /// </summary>
-    public enum TransmissionControl
+    public enum StopBitsNumber
     {
         [Description("Brak")]
-        None,
-        [Description("Bit parzystości")]
-        Even,
-        [Description("Bit nieparzystości")]
-        Odd
+        Zero = 0,
+        [Description("Jeden")]
+        One = 1,
+        [Description("Dwa")]
+        Two = 2
     }
 }

@@ -11,6 +11,7 @@ namespace RS232.UI.ViewModel
     {
         #region Fields
 
+        
         private int _portNumber;
         private BitRate _bitRate;
         private string _messageText;
@@ -19,7 +20,7 @@ namespace RS232.UI.ViewModel
         private Terminator _terminator;
         private string _customTerminator;
         private string _selectedPortName;
-        private FlowControl _flowControl;
+        private FlowControl _flowControl; 
         private CharacterFormat _characterFormat;
         private ConnectionState _connectionState;
         private StringBuilder _receivedMessages = new StringBuilder();
@@ -152,7 +153,7 @@ namespace RS232.UI.ViewModel
                 RaisePropertyChanged();
             }
         }
-        
+
         /// <summary>
         /// Format of single character to send
         /// </summary>
@@ -221,12 +222,10 @@ namespace RS232.UI.ViewModel
             InputType = InputType.Text;
             CharacterFormat = new CharacterFormat
             {
-                StopBits = 2,
                 DataFieldSize = 8,
-                ControlType = TransmissionControl.None
+                ControlType = ParityControl.None,
+                StopBitsNumber = StopBitsNumber.Zero
             };
-
-            MessageText = "Wpisz tu swoj¹ wiadomoœæ!";
 
             ConnectionState = ConnectionState.Disconnected;
         }

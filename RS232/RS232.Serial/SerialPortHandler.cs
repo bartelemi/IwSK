@@ -23,7 +23,7 @@ namespace RS232.Serial
         private string CreateMessage(string message, MessageProperties properties)
         {
             var sb = new StringBuilder();
-
+            
             #region Append date time
 
             if (properties.AppendDateTime)
@@ -79,7 +79,9 @@ namespace RS232.Serial
             port.PortName = connectionSettings.PortName;
             port.BaudRate = (int)(connectionSettings.BitRate);
             port.DataBits = connectionSettings.DataBits;
-            //port.StopBits = connectionSettings.StopBits;
+            port.Parity = (Parity)connectionSettings.ParityControl;
+
+            port.StopBits = (StopBits)connectionSettings.CharacterFormat.StopBitsNumber;
             //port.Parity = connectionSettings.CharacterFormat;
 
             port.Open();

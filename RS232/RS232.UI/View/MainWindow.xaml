@@ -16,7 +16,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -47,7 +47,8 @@
 
                     <TextBox Grid.Column="0" Margin="5"
                              FontSize="14" FontFamily="Consolas"
-                             Text="{Binding MessageText}"/>
+                             Text="{Binding MessageText}"
+                             ToolTip="Wpisz tutaj wiadomość do wysłania."/>
 
                     <Border Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="2" Margin="5">
                         <StackPanel VerticalAlignment="Center">
@@ -125,7 +126,8 @@
 
             <Border Grid.Row="3" BorderBrush="Black" BorderThickness="2" Background="PeachPuff">
                 <Grid Margin="5">
-                    <TextBlock Text="{Binding ReceivedMessages}" FontSize="14" FontFamily="Consolas"/>
+                    <TextBlock Text="{Binding ReceivedMessages}" 
+                               FontSize="14" FontFamily="Consolas"/>
                 </Grid>
             </Border>
         </Grid>
@@ -152,9 +154,12 @@
                                 <Label Content="Bity danych"/>
                                 <TextBox Text="{Binding CharacterFormat.DataFieldSize}"/>
                                 <Label Content="Bity stopu"/>
-                                <TextBox Text="{Binding CharacterFormat.StopBits}"/>
+                                <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:StopBitsNumber}}}"
+                                          DisplayMemberPath="Description"
+                                          SelectedValue="{Binding CharacterFormat.StopBitsNumber}"
+                                          SelectedValuePath="Value"/>
                                 <Label Content="Kontrola danych"/>
-                                <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:TransmissionControl}}}"
+                                <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:ParityControl}}}"
                                           DisplayMemberPath="Description"
                                           SelectedValue="{Binding CharacterFormat.ControlType}"
                                           SelectedValuePath="Value"/>

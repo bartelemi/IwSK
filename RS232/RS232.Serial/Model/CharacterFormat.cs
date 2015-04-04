@@ -14,9 +14,9 @@ namespace RS232.Serial.Model
     {
         #region Fields
 
-        private int _stopBits;
         private int _dataFieldSize;
-        private TransmissionControl _controlType;
+        private ParityControl _controlType;
+        private StopBitsNumber _stopBitsNumber;
 
         #endregion Fields
 
@@ -39,30 +39,21 @@ namespace RS232.Serial.Model
         }
 
         /// <summary>
-        /// Number of stop bits.
-        /// Allowed values are 1 or 2.
-        /// </summary>
-        public int StopBits 
-        {
-            get { return _stopBits; }
-            set
-            {
-                if (value < 1)
-                    value = 1;
-                if (value > 2)
-                    value = 2;
-
-                _stopBits = value;
-            }
-        }
-
-        /// <summary>
         /// Type of transmission control
         /// </summary>
-        public TransmissionControl ControlType
+        public ParityControl ControlType
         {
             get { return _controlType; }
             set { _controlType = value; }
+        }
+
+        /// <summary>
+        /// Number of Stop bits after every character
+        /// </summary>
+        public StopBitsNumber StopBitsNumber
+        {
+            get { return _stopBitsNumber; }
+            set { _stopBitsNumber = value; }
         }
     }
 }
