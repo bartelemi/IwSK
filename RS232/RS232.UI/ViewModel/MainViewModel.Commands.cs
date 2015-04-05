@@ -13,6 +13,9 @@ namespace RS232.UI.ViewModel
     {
         #region Commands
 
+        public RelayCommand ConnectCommand { get; private set; }
+        public RelayCommand DisconnectCommand { get; private set; }
+        public RelayCommand AutobaudCommand { get; private set; }
         public RelayCommand SendCommand { get; private set; }
         public RelayCommand TransactionCommand { get; private set; }
         public RelayCommand PingCommand { get; private set; }
@@ -24,11 +27,38 @@ namespace RS232.UI.ViewModel
         #region Initialize commands
         private void InitCommands()
         {
+            InitConnectCommand();
+            InitDisonnectCommand();
+            InitAutobaudCommand();
             InitSendCommand();
             InitTransactionCommand();
             InitPingCommand();
             InitInputTypeCommand();
             InitClearMessageTextCommand();
+        }
+
+        private void InitConnectCommand()
+        {
+            ConnectCommand = new RelayCommand(() =>
+            {
+                
+            });
+        }
+
+        private void InitDisonnectCommand()
+        {
+            DisconnectCommand = new RelayCommand(() =>
+            {
+
+            });
+        }
+
+        private void InitAutobaudCommand()
+        {
+            AutobaudCommand = new RelayCommand(() =>
+            {
+
+            });   
         }
 
         private void InitSendCommand()
@@ -42,7 +72,8 @@ namespace RS232.UI.ViewModel
                     CustomTerminator = CustomTerminator
                 };
                 var communicator = new SerialPortHandler();
-                communicator.SendMessage(new ConnectionSettings(), new MessageProperties(), MessageText);
+                communicator.OpenConnection(new ConnectionSettings());
+                communicator.SendMessage(new MessageProperties(), MessageText);
             });
         }
 

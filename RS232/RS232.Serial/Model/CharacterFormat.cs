@@ -15,7 +15,7 @@ namespace RS232.Serial.Model
         #region Fields
 
         private int _dataFieldSize;
-        private ParityControl _controlType;
+        private ParityControl _parityControl;
         private StopBitsNumber _stopBitsNumber;
 
         #endregion Fields
@@ -41,10 +41,10 @@ namespace RS232.Serial.Model
         /// <summary>
         /// Type of transmission control
         /// </summary>
-        public ParityControl ControlType
+        public ParityControl ParityControl
         {
-            get { return _controlType; }
-            set { _controlType = value; }
+            get { return _parityControl; }
+            set { _parityControl = value; }
         }
 
         /// <summary>

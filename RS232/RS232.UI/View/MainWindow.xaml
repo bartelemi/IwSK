@@ -52,8 +52,8 @@
 
                     <Border Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="2" Margin="5">
                         <StackPanel VerticalAlignment="Center">
-                            <Button Command="{Binding SendCommand}"
-                                    Height="30" Padding="0" Margin="5">
+                            <Button Height="30" Padding="0" Margin="5"
+                                    Command="{Binding SendCommand}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="../Resources/send.png"/>
@@ -61,8 +61,8 @@
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
-                            <Button Command="{Binding TransactionCommand}"
-                                    Height="30" Padding="0" Margin="5">
+                            <Button Height="30" Padding="0" Margin="5"
+                                    Command="{Binding TransactionCommand}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="../Resources/transaction.png"/>
@@ -70,8 +70,8 @@
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
-                            <Button Command="{Binding PingCommand}"
-                                    Height="30" Padding="0" Margin="5">
+                            <Button Height="30" Padding="0" Margin="5"
+                                    Command="{Binding PingCommand}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="../Resources/ping.png"/>
@@ -79,8 +79,8 @@
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
-                            <Button Command="{Binding InputTypeCommand}"
-                                    Height="30" Padding="0" Margin="5 15 5 5"
+                            <Button Height="30" Padding="0" Margin="5 15 5 5"
+                                    Command="{Binding InputTypeCommand}"
                                     Visibility="{Binding InputType, Converter={StaticResource EnumToVisibility}, ConverterParameter=Text}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
@@ -89,8 +89,8 @@
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
-                            <Button Command="{Binding InputTypeCommand}"
-                                    Height="30" Padding="0" Margin="5 15 5 5"
+                            <Button Height="30" Padding="0" Margin="5 15 5 5"
+                                    Command="{Binding InputTypeCommand}"
                                     Visibility="{Binding InputType, Converter={StaticResource EnumToVisibility}, ConverterParameter=Binary}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
@@ -99,8 +99,8 @@
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
-                            <Button Command="{Binding ClearMessageTextCommand}"
-                                    Height="30" Padding="0" Margin="5">
+                            <Button Height="30" Padding="0" Margin="5"
+                                    Command="{Binding ClearMessageTextCommand}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="../Resources/clean.png"/>
@@ -182,7 +182,15 @@
                     </StackPanel>
                 </GroupBox>
 
-                <Button Content="Autobauding" Margin="5 50 5 5"/>
+                <Button Content="Połącz" Margin="5 50 5 5"
+                        Command="{Binding ConnectCommand}"
+                        Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Disconnected|Error}"/>
+                <Button Content="Rozłącz" Margin="5 50 5 5"
+                        Command="{Binding DisconnectCommand}"
+                        Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Connected|Listening}"/>
+                <Button Content="Autobauding" Margin="5"
+                        Command="{Binding AutobaudCommand}"
+                        Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Disconnected|Error}"/>
             </StackPanel>
         </Grid>
 

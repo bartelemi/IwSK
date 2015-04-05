@@ -1,5 +1,6 @@
 using System.Text;
 using GalaSoft.MvvmLight;
+using RS232.Serial;
 using RS232.Serial.Model;
 
 namespace RS232.UI.ViewModel
@@ -24,6 +25,7 @@ namespace RS232.UI.ViewModel
         private CharacterFormat _characterFormat;
         private ConnectionState _connectionState;
         private StringBuilder _receivedMessages = new StringBuilder();
+        private SerialPortHandler _serialPortHandler = new SerialPortHandler();
 
         #endregion Fields
 
@@ -223,7 +225,7 @@ namespace RS232.UI.ViewModel
             CharacterFormat = new CharacterFormat
             {
                 DataFieldSize = 8,
-                ControlType = ParityControl.None,
+                ParityControl = ParityControl.None,
                 StopBitsNumber = StopBitsNumber.Zero
             };
 

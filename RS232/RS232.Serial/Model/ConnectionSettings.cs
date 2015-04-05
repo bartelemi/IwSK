@@ -10,8 +10,7 @@ namespace RS232.Serial
     {
         public string PortName { get; set; }
         public BitRate BitRate { get; set; }
-        public int DataBits { get; set; }
-        public ParityControl ParityControl { get; set; }
+        public string TerminalString { get; set; }
         public CharacterFormat CharacterFormat { get; set; }
     }
 }
