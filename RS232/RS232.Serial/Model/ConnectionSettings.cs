@@ -11,6 +11,7 @@ namespace RS232.Serial
         public string PortName { get; set; }
         public BitRate BitRate { get; set; }
         public string TerminalString { get; set; }
+        public FlowControl FlowControl { get; set; }
         public CharacterFormat CharacterFormat { get; set; }
     }
 }

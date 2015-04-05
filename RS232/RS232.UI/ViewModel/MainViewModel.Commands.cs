@@ -41,7 +41,26 @@ namespace RS232.UI.ViewModel
         {
             ConnectCommand = new RelayCommand(() =>
             {
-                
+                try
+                {
+                    var settings = new ConnectionSettings
+                    {
+                        BitRate = BitRate,
+                        FlowControl = FlowControl,
+                        PortName = SelectedPortName,
+                        CharacterFormat = CharacterFormat,
+                        TerminalString = Terminator.ToString()
+                    };
+
+                    ConnectionState = ConnectionState.Connecting;
+                    _serialPortHandler.OpenConnection(settings);
+                    ConnectionState = ConnectionState.Connected;
+                }
+                catch (Exception ex)
+                {
+                    ErrorText = ex.Message;
+                    ConnectionState = ConnectionState.Error;
+                }
             });
         }
 
@@ -49,7 +68,17 @@ namespace RS232.UI.ViewModel
         {
             DisconnectCommand = new RelayCommand(() =>
             {
-
+                try
+                {
+                    ConnectionState = ConnectionState.Disconnecting;
+                    _serialPortHandler.CloseConnection();
+                    ConnectionState = ConnectionState.Disconnected;
+                }
+                catch (Exception ex)
+                {
+                    ErrorText = ex.Message;
+                    ConnectionState = ConnectionState.Error;
+                }
             });
         }
 
@@ -57,7 +86,17 @@ namespace RS232.UI.ViewModel
         {
             AutobaudCommand = new RelayCommand(() =>
             {
-
+                try
+                {
+                    ConnectionState = ConnectionState.Autobauding;
+                    _serialPortHandler.Autobaud(SelectedPortName);
+                    ConnectionState = ConnectionState.Connected;
+                }
+                catch (Exception ex)
+                {
+                    ErrorText = ex.Message;
+                    ConnectionState = ConnectionState.Error;   
+                }
             });   
         }
 
@@ -65,15 +104,23 @@ namespace RS232.UI.ViewModel
         {
             SendCommand = new RelayCommand(() =>
             {
-                var properties = new MessageProperties
+                try
                 {
-                    Terminator = Terminator,
-                    AppendDateTime = AppendDateTime,
-                    CustomTerminator = CustomTerminator
-                };
-                var communicator = new SerialPortHandler();
-                communicator.OpenConnection(new ConnectionSettings());
-                communicator.SendMessage(new MessageProperties(), MessageText);
+                    var properties = new MessageProperties
+                    {
+                        Terminator = Terminator,
+                        AppendDateTime = AppendDateTime,
+                        CustomTerminator = CustomTerminator
+                    };
+                    ConnectionState = ConnectionState.Sending;
+                    _serialPortHandler.SendMessage(properties, MessageText);
+                    ConnectionState = ConnectionState.Connected;
+                }
+                catch (Exception ex)
+                {
+                    ErrorText = ex.Message;
+                    ConnectionState = ConnectionState.Error;   
+                }
             });
         }
 
@@ -81,6 +128,23 @@ namespace RS232.UI.ViewModel
         {
             TransactionCommand = new RelayCommand(() =>
             {
+                try
+                {
+                    var properties = new MessageProperties
+                    {
+                        Terminator = Terminator,
+                        AppendDateTime = AppendDateTime,
+                        CustomTerminator = CustomTerminator
+                    };
+                    ConnectionState = ConnectionState.Sending;
+                    _serialPortHandler.Transaction(properties, MessageText);
+                    ConnectionState = ConnectionState.Connected;
+                }
+                catch (Exception ex)
+                {
+                    ErrorText = ex.Message;
+                    ConnectionState = ConnectionState.Error;
+                }
             });
         }
 
@@ -88,6 +152,15 @@ namespace RS232.UI.ViewModel
         {
             PingCommand = new RelayCommand(() =>
             {
+                try
+                {
+                    _serialPortHandler.Ping();
+                }
+                catch (Exception ex)
+                {
+                    ErrorText = ex.Message;
+                    ConnectionState = ConnectionState.Error;
+                }
             });
         }
 

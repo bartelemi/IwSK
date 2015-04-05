@@ -195,6 +195,8 @@
         </Grid>
 
         <StatusBar Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="23">
+            <StatusBarItem Content="{Binding ErrorText}" DockPanel.Dock="Right"
+                           Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Error}"/>
             <StatusBarItem Content="Status: "/>
             <StatusBarItem Content="{Binding ConnectionState, Converter={StaticResource EnumValueToEnumDescription}}"/>
         </StatusBar>

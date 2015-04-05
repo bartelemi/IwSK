@@ -18,8 +18,8 @@ namespace RS232.Serial.Model
         Connecting,
         [Description("Połączono")]
         Connected,
-        [Description("Nasłuchuję. . .")]
-        Listening,
+        [Description("Rozłączam. . .")]
+        Disconnecting,
         [Description("Rozłączono")]
         Disconnected,
         [Description("Wysyłanie")]

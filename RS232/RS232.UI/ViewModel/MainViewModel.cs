@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text;
 using GalaSoft.MvvmLight;
 using RS232.Serial;
@@ -12,16 +13,16 @@ namespace RS232.UI.ViewModel
     {
         #region Fields
 
-        
         private int _portNumber;
         private BitRate _bitRate;
+        private string _errorText;
         private string _messageText;
-        private InputType _inputType; 
-        private bool _appendDateTime; 
+        private InputType _inputType;
+        private bool _appendDateTime;
         private Terminator _terminator;
         private string _customTerminator;
         private string _selectedPortName;
-        private FlowControl _flowControl; 
+        private FlowControl _flowControl;
         private CharacterFormat _characterFormat;
         private ConnectionState _connectionState;
         private StringBuilder _receivedMessages = new StringBuilder();
@@ -50,10 +51,23 @@ namespace RS232.UI.ViewModel
         public BitRate BitRate
         {
             get { return _bitRate; }
-            set 
-            { 
-                _bitRate = value; 
-                RaisePropertyChanged(); 
+            set
+            {
+                _bitRate = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Text of last occured error
+        /// </summary>
+        public string ErrorText
+        {
+            get { return _errorText; }
+            set
+            {
+                _errorText = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -138,11 +152,11 @@ namespace RS232.UI.ViewModel
             get { return _selectedPortName; }
             set
             {
-                _selectedPortName = value; 
+                _selectedPortName = value;
                 RaisePropertyChanged();
             }
         }
-        
+
         /// <summary>
         /// Type of communication flow control
         /// </summary>
@@ -207,14 +221,14 @@ namespace RS232.UI.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            InitProperties();
+            InitSerialPortSettings();
             InitCommands();
         }
 
         /// <summary>
         /// Assign default values to connection properties
         /// </summary>
-        private void InitProperties()
+        private void InitSerialPortSettings()
         {
             AppendDateTime = false;
 
@@ -230,6 +244,33 @@ namespace RS232.UI.ViewModel
             };
 
             ConnectionState = ConnectionState.Disconnected;
+        }
+
+        /// <summary>
+        /// Sets properties to the given values
+        /// </summary>
+        /// <param name="settings">Serial port settings</param>
+        private void SetSerialPortSettings(ConnectionSettings settings)
+        {
+            Terminator terminator;
+            if (Terminator.TryParse(settings.TerminalString, true, out terminator))
+            {
+                Terminator = terminator;
+            }
+            else
+            {
+                Terminator = Terminator.Custom;
+                CustomTerminator = settings.TerminalString;
+            }
+
+            BitRate = settings.BitRate;
+            FlowControl = settings.FlowControl;
+            CharacterFormat = new CharacterFormat
+            {
+                DataFieldSize = settings.CharacterFormat.DataFieldSize,
+                ParityControl = settings.CharacterFormat.ParityControl,
+                StopBitsNumber = settings.CharacterFormat.StopBitsNumber
+            };
         }
 
         #endregion Initialization
