@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 using GalaSoft.MvvmLight;
@@ -20,7 +22,7 @@ namespace RS232.UI.ViewModel
         private InputType _inputType;
         private bool _appendDateTime;
         private Terminator _terminator;
-        private string _customTerminator;
+        private string _terminalString;
         private string _selectedPortName;
         private FlowControl _flowControl;
         private CharacterFormat _characterFormat;
@@ -134,12 +136,12 @@ namespace RS232.UI.ViewModel
         /// <summary>
         /// Custom terminator text
         /// </summary>
-        public string CustomTerminator
+        public string TerminalString
         {
-            get { return _customTerminator; }
+            get { return _terminalString; }
             set
             {
-                _customTerminator = value.Substring(0, 2);
+                _terminalString = value.Substring(0, 2);
                 RaisePropertyChanged();
             }
         }
@@ -184,7 +186,7 @@ namespace RS232.UI.ViewModel
         }
 
         /// <summary>
-        /// Text of message to be send
+        /// Messages received from serial port
         /// </summary>
         public string ReceivedMessages
         {
@@ -211,7 +213,7 @@ namespace RS232.UI.ViewModel
                 RaisePropertyChanged();
             }
         }
-
+        
         #endregion Properties
 
         #region Initialization
@@ -223,6 +225,8 @@ namespace RS232.UI.ViewModel
         {
             InitSerialPortSettings();
             InitCommands();
+
+            _serialPortHandler.PropertyChanged += new PropertyChangedEventHandler(SerialPortHandler_StateChanged);
         }
 
         /// <summary>
@@ -240,7 +244,7 @@ namespace RS232.UI.ViewModel
             {
                 DataFieldSize = 8,
                 ParityControl = ParityControl.None,
-                StopBitsNumber = StopBitsNumber.Zero
+                StopBitsNumber = StopBitsNumber.One
             };
 
             ConnectionState = ConnectionState.Disconnected;
@@ -260,7 +264,7 @@ namespace RS232.UI.ViewModel
             else
             {
                 Terminator = Terminator.Custom;
-                CustomTerminator = settings.TerminalString;
+                TerminalString = settings.TerminalString;
             }
 
             BitRate = settings.BitRate;
@@ -274,5 +278,36 @@ namespace RS232.UI.ViewModel
         }
 
         #endregion Initialization
+
+        #region Serial port events
+
+        /// <summary>
+        /// Updates viewModel according to changes in serial port state
+        /// </summary>
+        /// <param name="sender">Sender of event</param>
+        /// <param name="e">Event arguments</param>
+        private void SerialPortHandler_StateChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "IsDSRActive":
+                {
+                    break;
+                }
+                case "IsCTSActive":
+                {
+                    break;
+                }
+                case "ReceivedData":
+                {
+                    var data = _serialPortHandler.ReceivedData;
+                    if (!string.IsNullOrEmpty(data))
+                        ReceivedMessages = data;
+                    break;
+                }
+            }
+        }
+
+        #endregion Serial port events
     }
 }

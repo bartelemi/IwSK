@@ -68,6 +68,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converter\EnumToBoolConverter.cs" />
     <Compile Include="Converter\EnumToVisibilityConverter.cs" />
     <Compile Include="Converter\EnumValueToEnumDescriptionConverter.cs" />
     <Compile Include="Extension\EnumExtension.cs" />

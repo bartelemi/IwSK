@@ -11,8 +11,6 @@ namespace RS232.Serial.Model
     /// </summary>
     public class MessageProperties
     {
-        public Terminator Terminator { get; set; }
-        public string CustomTerminator { get; set; }
         public bool AppendDateTime { get; set; }
     }
 }

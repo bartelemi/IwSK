@@ -12,8 +12,6 @@ namespace RS232.Serial.Model
     /// </summary>
     public enum StopBitsNumber
     {
-        [Description("Brak")]
-        Zero = 0,
         [Description("Jeden")]
         One = 1,
         [Description("Dwa")]

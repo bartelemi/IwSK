@@ -140,8 +140,7 @@
                     <StackPanel>
                         <Label Content="Port"/>
                         <ComboBox ItemsSource="{Binding SerialPortNames}"
-                                  SelectedValue="{Binding SelectedPortName}"
-                                  SelectedValuePath="Value"/>
+                                  SelectedValue="{Binding SelectedPortName}"/>
 
                         <Label Content="Prędkość transmisji"/>
                         <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:BitRate}}}"
@@ -161,7 +160,7 @@
                                 <Label Content="Kontrola danych"/>
                                 <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:ParityControl}}}"
                                           DisplayMemberPath="Description"
-                                          SelectedValue="{Binding CharacterFormat.ControlType}"
+                                          SelectedValue="{Binding CharacterFormat.ParityControl}"
                                           SelectedValuePath="Value"/>
                             </StackPanel>
                         </GroupBox>
@@ -177,8 +176,8 @@
                                   DisplayMemberPath="Description"
                                   SelectedValue="{Binding Terminator}"
                                   SelectedValuePath="Value"/>
-                        <TextBox Text="{Binding CustomTerminator}"
-                                 Visibility="{Binding Terminator, Converter={StaticResource EnumToVisibility}, ConverterParameter=Custom}"/>
+                        <TextBox Text="{Binding TerminalString.Item2}"
+                                 IsEnabled="{Binding Terminator, Converter={StaticResource EnumToBool}, ConverterParameter=Custom}"/>
                     </StackPanel>
                 </GroupBox>
 

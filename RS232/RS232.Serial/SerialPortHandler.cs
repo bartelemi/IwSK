@@ -14,11 +14,15 @@ namespace RS232.Serial
     /// <summary>
     /// Handles communication through serial port
     /// </summary>
-    public class SerialPortHandler
+    public class SerialPortHandler : INotifyPropertyChanged
     {
         #region Fields
 
+        private bool _isDSRActive;
+        private bool _isCTSActive;
+        private string _receivedData;
         private SerialPort _port = new SerialPort();
+        private StringBuilder _incomingMessage = new StringBuilder();
 
         #endregion Fields
 
@@ -31,8 +35,86 @@ namespace RS232.Serial
         {
             get { return _port.IsOpen; }
         }
+        
+        /// <summary>
+        /// Holds the state of DSR pin
+        /// </summary>
+                
+        public bool IsDSRActive
+        {
+            get { return _isDSRActive; }
+            set
+            {
+                _isDSRActive = value;
+                RaisePropertyChanged("IsDSRActive");
+            }
+        }
 
+        /// <summary>
+        /// Holds the state of CTS pin
+        /// </summary>
+        public bool IsCTSActive
+        {
+            get { return _isCTSActive; }
+            set
+            {
+                _isCTSActive = value;
+                RaisePropertyChanged("IsCTSActive");
+            }
+        }
+
+        /// <summary>
+        /// Data read from serial port
+        /// </summary>
+        public string ReceivedData
+        {
+            get { return _receivedData; }
+            set
+            {
+                _receivedData = value;
+                RaisePropertyChanged("ReceivedData");
+            }
+        }
+        
         #endregion Properties
+
+        #region Initialization
+
+        /// <summary>
+        /// Initializes instance of SerialPortHandler
+        /// </summary>
+        public SerialPortHandler()
+        {
+            _port.PinChanged += (o, e) =>
+            {
+                var serialPinChange = e.EventType;
+                switch (serialPinChange)
+                {
+                    case SerialPinChange.CtsChanged:
+                        IsCTSActive = !IsCTSActive;
+                        break;
+                    case SerialPinChange.DsrChanged:
+                        IsDSRActive = !IsDSRActive;
+                        break;
+                }
+            };
+
+            _port.DataReceived += (o, e) =>
+            {
+                var text = _port.ReadExisting();
+                if (!string.IsNullOrEmpty(text))
+                {
+                    _incomingMessage.Append(text);
+                    if (text.Contains(_port.NewLine))
+                    {
+                        ReceivedData = _incomingMessage.ToString();
+                        _incomingMessage.Clear();
+                    }
+                }
+            };
+        }
+
+        #endregion Initialization
 
         #region Communication
 
@@ -67,9 +149,9 @@ namespace RS232.Serial
                 }
                 else
                 {
-                    throw new InvalidOperationException("Port jest zamknięty!");    
+                    throw new InvalidOperationException("Port jest zamknięty!");
                 }
-                
+
             }
             catch (TimeoutException tmoutEx)
             {
@@ -92,7 +174,7 @@ namespace RS232.Serial
                 throw new Exception("Nieznany błąd!");
             }
         }
-        
+
         /// <summary>
         /// Automatically discovers connection settings of connection
         /// and estabilishes connection
@@ -105,7 +187,7 @@ namespace RS232.Serial
                 PortName = portName
             };
 
-            // TODO - get settings from selected port
+            // TODO: get settings from selected port
 
             OpenConnection(settings);
         }
@@ -141,7 +223,7 @@ namespace RS232.Serial
             catch (IOException ioEx)
             {
                 Debug.WriteLine(ioEx.Message);
-                throw new IOException("Ogólny błąd I/O!"); 
+                throw new IOException("Ogólny błąd I/O!");
             }
             catch (Exception ex)
             {
@@ -159,6 +241,8 @@ namespace RS232.Serial
         public void Transaction(MessageProperties messageProperties, string message)
         {
             SendMessage(messageProperties, message);
+
+            // TODO: wait for response
         }
 
         #endregion Data exchange
@@ -217,42 +301,26 @@ namespace RS232.Serial
 
             sb.Append(message);
 
-            #region Append terminator
-
-            switch (properties.Terminator)
-            {
-                case Terminator.CR:
-                    sb.Append('\r');
-                    break;
-                case Terminator.LF:
-                    sb.Append('\n');
-                    break;
-                case Terminator.Custom:
-                    if (string.IsNullOrEmpty(properties.CustomTerminator))
-                    {
-                        sb.Append('\r');
-                        sb.Append('\n');
-                    }
-                    else
-                    {
-                        sb.Append(properties.CustomTerminator);
-                    }
-                    break;
-                case Terminator.CRLF:
-                    sb.Append('\r');
-                    sb.Append('\n');
-                    break;
-                default:
-                    sb.Append('\r');
-                    sb.Append('\n');
-                    break;
-            }
-
-            #endregion Append terminator
+            // Terminator is added by SerialPort
 
             return sb.ToString();
         }
 
         #endregion Helpers
+
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void RaisePropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        #endregion INotifyPropertyChanged
     }
 }

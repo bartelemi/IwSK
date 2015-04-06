@@ -49,7 +49,7 @@ namespace RS232.UI.ViewModel
                         FlowControl = FlowControl,
                         PortName = SelectedPortName,
                         CharacterFormat = CharacterFormat,
-                        TerminalString = Terminator.ToString()
+                        TerminalString = TerminalString
                     };
 
                     ConnectionState = ConnectionState.Connecting;
@@ -108,9 +108,7 @@ namespace RS232.UI.ViewModel
                 {
                     var properties = new MessageProperties
                     {
-                        Terminator = Terminator,
                         AppendDateTime = AppendDateTime,
-                        CustomTerminator = CustomTerminator
                     };
                     ConnectionState = ConnectionState.Sending;
                     _serialPortHandler.SendMessage(properties, MessageText);
@@ -132,9 +130,7 @@ namespace RS232.UI.ViewModel
                 {
                     var properties = new MessageProperties
                     {
-                        Terminator = Terminator,
                         AppendDateTime = AppendDateTime,
-                        CustomTerminator = CustomTerminator
                     };
                     ConnectionState = ConnectionState.Sending;
                     _serialPortHandler.Transaction(properties, MessageText);
