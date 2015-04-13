@@ -49,7 +49,7 @@ namespace RS232.UI.ViewModel
                         FlowControl = FlowControl,
                         PortName = SelectedPortName,
                         CharacterFormat = CharacterFormat,
-                        TerminalString = TerminalString
+                        TerminalString = TerminalSequence.TerminalString
                     };
 
                     ConnectionState = ConnectionState.Connecting;
@@ -58,7 +58,7 @@ namespace RS232.UI.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    ErrorText = ex.Message;
+                    StatusText = ex.Message;
                     ConnectionState = ConnectionState.Error;
                 }
             });
@@ -76,7 +76,7 @@ namespace RS232.UI.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    ErrorText = ex.Message;
+                    StatusText = ex.Message;
                     ConnectionState = ConnectionState.Error;
                 }
             });
@@ -94,7 +94,7 @@ namespace RS232.UI.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    ErrorText = ex.Message;
+                    StatusText = ex.Message;
                     ConnectionState = ConnectionState.Error;   
                 }
             });   
@@ -109,6 +109,7 @@ namespace RS232.UI.ViewModel
                     var properties = new MessageProperties
                     {
                         AppendDateTime = AppendDateTime,
+                        TerminalString = TerminalSequence.TerminalString,
                     };
                     ConnectionState = ConnectionState.Sending;
                     _serialPortHandler.SendMessage(properties, MessageText);
@@ -116,8 +117,12 @@ namespace RS232.UI.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    ErrorText = ex.Message;
-                    ConnectionState = ConnectionState.Error;   
+                    StatusText = ex.Message;
+                    ConnectionState = ConnectionState.Error;
+                }
+                finally
+                {
+                    MessageText = string.Empty;
                 }
             });
         }
@@ -131,15 +136,21 @@ namespace RS232.UI.ViewModel
                     var properties = new MessageProperties
                     {
                         AppendDateTime = AppendDateTime,
+                        TerminalString = TerminalSequence.TerminalString,
                     };
                     ConnectionState = ConnectionState.Sending;
-                    _serialPortHandler.Transaction(properties, MessageText);
+                    var response = _serialPortHandler.Transaction(properties, MessageText);
+                    ReceivedMessages = response;
                     ConnectionState = ConnectionState.Connected;
                 }
                 catch (Exception ex)
                 {
-                    ErrorText = ex.Message;
+                    StatusText = ex.Message;
                     ConnectionState = ConnectionState.Error;
+                }
+                finally
+                {
+                    MessageText = string.Empty;
                 }
             });
         }
@@ -150,11 +161,12 @@ namespace RS232.UI.ViewModel
             {
                 try
                 {
-                    _serialPortHandler.Ping();
+                    var pingMessage = _serialPortHandler.Ping();
+                    StatusText = pingMessage;
                 }
                 catch (Exception ex)
                 {
-                    ErrorText = ex.Message;
+                    StatusText = ex.Message;
                     ConnectionState = ConnectionState.Error;
                 }
             });

@@ -17,16 +17,15 @@ namespace RS232.UI.ViewModel
 
         private int _portNumber;
         private BitRate _bitRate;
-        private string _errorText;
+        private string _statusText;
         private string _messageText;
         private InputType _inputType;
         private bool _appendDateTime;
-        private Terminator _terminator;
-        private string _terminalString;
         private string _selectedPortName;
         private FlowControl _flowControl;
         private CharacterFormat _characterFormat;
         private ConnectionState _connectionState;
+        private TerminalSequence _terminalSequence;
         private StringBuilder _receivedMessages = new StringBuilder();
         private SerialPortHandler _serialPortHandler = new SerialPortHandler();
 
@@ -61,14 +60,14 @@ namespace RS232.UI.ViewModel
         }
 
         /// <summary>
-        /// Text of last occured error
+        /// Current status description
         /// </summary>
-        public string ErrorText
+        public string StatusText
         {
-            get { return _errorText; }
+            get { return _statusText; }
             set
             {
-                _errorText = value;
+                _statusText = value;
                 RaisePropertyChanged();
             }
         }
@@ -113,37 +112,11 @@ namespace RS232.UI.ViewModel
         }
 
         /// <summary>
-        /// Message terminator
-        /// </summary>
-        public Terminator Terminator
-        {
-            get { return _terminator; }
-            set
-            {
-                _terminator = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        /// <summary>
         /// Returns collection of serial ports names
         /// </summary>
         public string[] SerialPortNames
         {
             get { return System.IO.Ports.SerialPort.GetPortNames(); }
-        }
-
-        /// <summary>
-        /// Custom terminator text
-        /// </summary>
-        public string TerminalString
-        {
-            get { return _terminalString; }
-            set
-            {
-                _terminalString = value.Substring(0, 2);
-                RaisePropertyChanged();
-            }
         }
 
         /// <summary>
@@ -213,7 +186,17 @@ namespace RS232.UI.ViewModel
                 RaisePropertyChanged();
             }
         }
-        
+
+        public TerminalSequence TerminalSequence
+        {
+            get { return _terminalSequence; }
+            set
+            {
+                _terminalSequence = value;
+                RaisePropertyChanged();
+            }
+        }
+
         #endregion Properties
 
         #region Initialization
@@ -237,7 +220,10 @@ namespace RS232.UI.ViewModel
             AppendDateTime = false;
 
             BitRate = BitRate.BR_115200;
-            Terminator = Terminator.CRLF;
+            TerminalSequence = new TerminalSequence
+            {
+                TerminatorType = TerminatorType.CRLF 
+            };
             FlowControl = FlowControl.None;
             InputType = InputType.Text;
             CharacterFormat = new CharacterFormat
@@ -256,15 +242,15 @@ namespace RS232.UI.ViewModel
         /// <param name="settings">Serial port settings</param>
         private void SetSerialPortSettings(ConnectionSettings settings)
         {
-            Terminator terminator;
-            if (Terminator.TryParse(settings.TerminalString, true, out terminator))
+            TerminatorType terminator;
+            if (TerminatorType.TryParse(settings.TerminalString, true, out terminator))
             {
-                Terminator = terminator;
+                TerminalSequence.TerminatorType = terminator;
             }
             else
             {
-                Terminator = Terminator.Custom;
-                TerminalString = settings.TerminalString;
+                TerminalSequence.TerminatorType = TerminatorType.Custom;
+                TerminalSequence.TerminalStringVisible = settings.TerminalString;
             }
 
             BitRate = settings.BitRate;

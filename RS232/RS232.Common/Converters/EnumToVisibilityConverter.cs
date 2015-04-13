@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace RS232.UI.Converter
+namespace RS232.Common.Converters
 {
     [ValueConversion(typeof(Enum), typeof(Visibility))]
     public class EnumToVisibilityConverter : IValueConverter

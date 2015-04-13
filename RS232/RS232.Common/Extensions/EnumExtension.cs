@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 
-namespace RS232.UI.Extension
+namespace RS232.Common.Extensions
 {
     public class EnumExtension : MarkupExtension
     {

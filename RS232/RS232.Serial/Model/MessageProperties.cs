@@ -12,5 +12,7 @@ namespace RS232.Serial.Model
     public class MessageProperties
     {
         public bool AppendDateTime { get; set; }
+
+        public string TerminalString { get; set; }
     }
 }

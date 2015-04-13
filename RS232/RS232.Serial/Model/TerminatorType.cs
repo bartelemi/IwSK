@@ -10,7 +10,7 @@ namespace RS232.Serial.Model
     /// <summary>
     /// Type of terminator, sequence of characters ending each message
     /// </summary>
-    public enum Terminator
+    public enum TerminatorType
     {
         [Description("Brak")]
         None,

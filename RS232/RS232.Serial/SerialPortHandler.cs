@@ -18,6 +18,16 @@ namespace RS232.Serial
     {
         #region Fields
 
+        /// <summary>
+        /// Message recognized as ping request
+        /// </summary>
+        private const string PingMessage = "FFFF\r\n";
+
+        /// <summary>
+        /// Message send back when received ping request
+        /// </summary>
+        private const string PingResponse = "OK\r\n";
+
         private bool _isDSRActive;
         private bool _isCTSActive;
         private string _receivedData;
@@ -35,11 +45,11 @@ namespace RS232.Serial
         {
             get { return _port.IsOpen; }
         }
-        
+
         /// <summary>
         /// Holds the state of DSR pin
         /// </summary>
-                
+
         public bool IsDSRActive
         {
             get { return _isDSRActive; }
@@ -75,7 +85,7 @@ namespace RS232.Serial
                 RaisePropertyChanged("ReceivedData");
             }
         }
-        
+
         #endregion Properties
 
         #region Initialization
@@ -102,13 +112,24 @@ namespace RS232.Serial
             _port.DataReceived += (o, e) =>
             {
                 var text = _port.ReadExisting();
+
+
+
                 if (!string.IsNullOrEmpty(text))
                 {
-                    _incomingMessage.Append(text);
-                    if (text.Contains(_port.NewLine))
+                    // Check if it is ping request
+                    if (text.Equals(PingMessage))
                     {
-                        ReceivedData = _incomingMessage.ToString();
-                        _incomingMessage.Clear();
+                        SendMessage(new MessageProperties(), PingResponse);
+                    }
+                    else
+                    {
+                        _incomingMessage.Append(text);
+                        if (text.Contains(_port.NewLine))
+                        {
+                            ReceivedData = _incomingMessage.ToString();
+                            _incomingMessage.Clear();
+                        }
                     }
                 }
             };
@@ -209,11 +230,7 @@ namespace RS232.Serial
 
                 _port.DiscardOutBuffer();
                 _port.DiscardInBuffer();
-
                 _port.Write(preparedMessage);
-
-                _port.DiscardOutBuffer();
-                _port.DiscardInBuffer();
             }
             catch (InvalidOperationException invOpEx)
             {
@@ -238,11 +255,15 @@ namespace RS232.Serial
         /// </summary>
         /// <param name="messageProperties">Parameters of message</param>
         /// <param name="message">Message plain text</param>
-        public void Transaction(MessageProperties messageProperties, string message)
+        /// <returns>Response message</returns>
+        public string Transaction(MessageProperties messageProperties, string message)
         {
             SendMessage(messageProperties, message);
 
             // TODO: wait for response
+            //       return received value
+
+            return string.Empty;
         }
 
         #endregion Data exchange
@@ -252,9 +273,26 @@ namespace RS232.Serial
         /// <summary>
         /// Tests connection and measures Round Trip Delay (RTD) time
         /// </summary>
-        public void Ping()
+        public string Ping()
         {
             // TODO
+            // http://stackoverflow.com/questions/12813151/how-can-i-discover-if-a-device-is-connected-to-a-specific-serial-com-port
+            // http://stackoverflow.com/questions/18145475/serial-port-ping-functionality
+            
+            if (IsOpen)
+            {
+                var sb = new StringBuilder();
+                var response = Transaction(new MessageProperties(), PingMessage);
+                sb.Append(string.Format("Data Set Ready: {0} | ", _port.DsrHolding ? "OK" : "-"));
+                sb.Append(string.Format("Clear-to-Send: {0} | ", _port.CtsHolding ? "OK" : "-"));
+                sb.Append(string.Format("Ping response: {0}", response));
+
+                return sb.ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         #endregion Testing connection
@@ -302,6 +340,11 @@ namespace RS232.Serial
             sb.Append(message);
 
             // Terminator is added by SerialPort
+            #region Append terminator
+
+            sb.Append(properties.TerminalString);
+
+            #endregion Append terminator
 
             return sb.ToString();
         }

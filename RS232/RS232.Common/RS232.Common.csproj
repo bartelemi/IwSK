@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A8222D61-BF8C-4184-B514-8498C4A2AD5F}</ProjectGuid>
+    <ProjectGuid>{473C6B61-FC7D-465C-B0FF-F157B5A7C305}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RS232.Serial</RootNamespace>
-    <AssemblyName>RS232.Serial</AssemblyName>
+    <RootNamespace>RS232.Common</RootNamespace>
+    <AssemblyName>RS232.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,36 +30,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComTimer.cs" />
-    <Compile Include="Model\ConnectionSettings.cs" />
-    <Compile Include="Model\ConnectionState.cs" />
-    <Compile Include="Model\MessageProperties.cs" />
-    <Compile Include="Model\BitRate.cs" />
-    <Compile Include="Model\CharacterFormat.cs" />
-    <Compile Include="Model\FlowControl.cs" />
-    <Compile Include="Model\StopBitsNumber.cs" />
-    <Compile Include="Model\TerminalSequence.cs" />
-    <Compile Include="Model\TerminatorType.cs" />
-    <Compile Include="Model\InputType.cs" />
-    <Compile Include="Model\ParityControl.cs" />
+    <Compile Include="Converters\EnumToBoolConverter.cs" />
+    <Compile Include="Converters\EnumToVisibilityConverter.cs" />
+    <Compile Include="Converters\EnumValueToEnumDescriptionConverter.cs" />
+    <Compile Include="Converters\StringToVisibleASCIIConverter.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerialPortHandler.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RS232.Common\RS232.Common.csproj">
-      <Project>{473c6b61-fc7d-465c-b0ff-f157b5a7c305}</Project>
-      <Name>RS232.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

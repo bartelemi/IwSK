@@ -68,10 +68,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converter\EnumToBoolConverter.cs" />
-    <Compile Include="Converter\EnumToVisibilityConverter.cs" />
-    <Compile Include="Converter\EnumValueToEnumDescriptionConverter.cs" />
-    <Compile Include="Extension\EnumExtension.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="View\MainWindow.xaml">
@@ -120,6 +116,10 @@
     <Resource Include="Resources\icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RS232.Common\RS232.Common.csproj">
+      <Project>{473c6b61-fc7d-465c-b0ff-f157b5a7c305}</Project>
+      <Name>RS232.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RS232.Serial\RS232.Serial.csproj">
       <Project>{a8222d61-bf8c-4184-b514-8498c4a2ad5f}</Project>
       <Name>RS232.Serial</Name>
@@ -133,9 +133,7 @@
     <Resource Include="Resources\ping.png" />
     <Resource Include="Resources\transaction.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Infrastructure\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\ABC.png" />
   </ItemGroup>
