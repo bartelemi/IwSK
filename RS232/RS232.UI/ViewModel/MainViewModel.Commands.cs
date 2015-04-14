@@ -47,6 +47,8 @@ namespace RS232.UI.ViewModel
                     {
                         BitRate = BitRate,
                         FlowControl = FlowControl,
+                        ReadTimeout = ReadTimeout,
+                        WriteTimeout = WriteTimeout,
                         PortName = SelectedPortName,
                         CharacterFormat = CharacterFormat,
                         TerminalString = TerminalSequence.TerminalString

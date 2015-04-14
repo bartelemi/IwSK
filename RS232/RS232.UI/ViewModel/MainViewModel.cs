@@ -17,12 +17,15 @@ namespace RS232.UI.ViewModel
 
         private int _portNumber;
         private BitRate _bitRate;
+        private int _readTimeout;
+        private int _writeTimeout; 
         private string _statusText;
         private string _messageText;
         private InputType _inputType;
         private bool _appendDateTime;
         private string _selectedPortName;
         private FlowControl _flowControl;
+        private Encoding _serialPortEncoding;
         private CharacterFormat _characterFormat;
         private ConnectionState _connectionState;
         private TerminalSequence _terminalSequence;
@@ -56,6 +59,56 @@ namespace RS232.UI.ViewModel
             {
                 _bitRate = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Number of milliseconds before a time-out
+        /// occurs when a read operation does not finish.
+        /// </summary>
+        public int ReadTimeout
+        {
+            get { return _readTimeout; }
+            set
+            {
+                if (value < 0)
+                {
+                    value = 0;
+                }
+                else if (value > 15000)
+                {
+                    value = System.IO.Ports.SerialPort.InfiniteTimeout;
+                }
+                if (value != _readTimeout)
+                {
+                    _readTimeout = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Number of milliseconds before a time-out 
+        /// occurs when a write operation does not finish.
+        /// </summary>
+        public int WriteTimeout
+        {
+            get { return _writeTimeout; }
+            set
+            {
+                if (value < 0)
+                {
+                    value = 0;
+                }
+                else if (value > 15000)
+                {
+                    value = System.IO.Ports.SerialPort.InfiniteTimeout;
+                }
+                if (value != _writeTimeout)
+                {
+                    _writeTimeout = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -146,6 +199,22 @@ namespace RS232.UI.ViewModel
         }
 
         /// <summary>
+        /// Selected encoding for serial port
+        /// </summary>
+        public Encoding SerialPortEncoding
+        {
+            get { return _serialPortEncoding; }
+            set
+            {
+                if (_serialPortEncoding != value)
+                {
+                    _serialPortEncoding = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Format of single character to send
         /// </summary>
         public CharacterFormat CharacterFormat
@@ -187,6 +256,9 @@ namespace RS232.UI.ViewModel
             }
         }
 
+        /// <summary>
+        /// Terminal sequence wrapper for terminal string of messages
+        /// </summary>
         public TerminalSequence TerminalSequence
         {
             get { return _terminalSequence; }
@@ -197,6 +269,22 @@ namespace RS232.UI.ViewModel
             }
         }
 
+        /// <summary>
+        /// Available character encodings for SerialPort
+        /// </summary>
+        public Encoding[] SerialPortEncodings
+        {
+            get
+            {
+                return new[]
+                {
+                    Encoding.ASCII, 
+                    Encoding.UTF8,
+                    Encoding.UTF32,
+                    Encoding.Unicode
+                };
+            }
+        }
         #endregion Properties
 
         #region Initialization
@@ -220,6 +308,9 @@ namespace RS232.UI.ViewModel
             AppendDateTime = false;
 
             BitRate = BitRate.BR_115200;
+            ReadTimeout = 500;
+            WriteTimeout = 500;
+            SerialPortEncoding = Encoding.ASCII;
             TerminalSequence = new TerminalSequence
             {
                 TerminatorType = TerminatorType.CRLF 

@@ -157,7 +157,11 @@ namespace RS232.Serial
                 _port.DataBits = connectionSettings.CharacterFormat.DataFieldSize;
                 _port.Parity = (Parity)connectionSettings.CharacterFormat.ParityControl;
                 _port.StopBits = (StopBits)connectionSettings.CharacterFormat.StopBitsNumber;
+                _port.Handshake = (Handshake)connectionSettings.FlowControl;
                 _port.NewLine = connectionSettings.TerminalString;
+                _port.ReadTimeout = connectionSettings.ReadTimeout;
+                _port.WriteTimeout = connectionSettings.WriteTimeout;
+                _port.Encoding = connectionSettings.Encoding;
 
                 _port.Open();
             }
