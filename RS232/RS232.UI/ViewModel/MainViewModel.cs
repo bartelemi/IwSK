@@ -378,7 +378,8 @@ namespace RS232.UI.ViewModel
                 case "ReceivedData":
                 {
                     var data = _serialPortHandler.ReceivedData;
-                    if (!string.IsNullOrEmpty(data))
+                    if (!string.IsNullOrEmpty(data) &&
+                        !data.Equals("OK\r\n"))
                         ReceivedMessages = data;
                     break;
                 }

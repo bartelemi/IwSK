@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,6 +48,7 @@
     <Compile Include="Model\BitRate.cs" />
     <Compile Include="Model\CharacterFormat.cs" />
     <Compile Include="Model\FlowControl.cs" />
+    <Compile Include="Model\MessageType.cs" />
     <Compile Include="Model\StopBitsNumber.cs" />
     <Compile Include="Model\TerminalSequence.cs" />
     <Compile Include="Model\TerminatorType.cs" />

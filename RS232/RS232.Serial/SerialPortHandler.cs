@@ -5,8 +5,13 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
 using RS232.Serial.Model;
 
 namespace RS232.Serial
@@ -21,16 +26,20 @@ namespace RS232.Serial
         /// <summary>
         /// Message recognized as ping request
         /// </summary>
-        private const string PingMessage = "FFFF\r\n";
+        private const string PingMessage = "ping";
 
         /// <summary>
         /// Message send back when received ping request
         /// </summary>
-        private const string PingResponse = "OK\r\n";
+        private const string PingResponse = "OK";
 
+        private bool _isDTRActive;
         private bool _isDSRActive;
+        private bool _isRTSActive;
         private bool _isCTSActive;
         private string _receivedData;
+        private Handshake _handshake;
+        private MessageType _messageType;
         private SerialPort _port = new SerialPort();
         private StringBuilder _incomingMessage = new StringBuilder();
 
@@ -47,29 +56,68 @@ namespace RS232.Serial
         }
 
         /// <summary>
-        /// Holds the state of DSR pin
+        /// Holds the state of Data Set Ready pin
         /// </summary>
-
         public bool IsDSRActive
         {
             get { return _isDSRActive; }
             set
             {
-                _isDSRActive = value;
-                RaisePropertyChanged("IsDSRActive");
+                if (_isDSRActive != value)
+                {
+                    _isDSRActive = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
         /// <summary>
-        /// Holds the state of CTS pin
+        /// Holds the state of Data Terminal Ready pin
+        /// </summary>
+        public bool IsDTRActive
+        {
+            get { return _isDTRActive; }
+            set
+            {
+                if (_isDTRActive != value)
+                {
+                    _isDTRActive = value;
+                    _port.DtrEnable = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Holds the state of Clear To Send pin
         /// </summary>
         public bool IsCTSActive
         {
             get { return _isCTSActive; }
             set
             {
-                _isCTSActive = value;
-                RaisePropertyChanged("IsCTSActive");
+                if (_isCTSActive != value)
+                {
+                    _isCTSActive = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Holds the state of Ready To Send pin
+        /// </summary>
+        public bool IsRTSActive
+        {
+            get { return _isRTSActive; }
+            set
+            {
+                if (_isRTSActive != value)
+                {
+                    _isRTSActive = value;
+                    _port.RtsEnable = value;
+                    RaisePropertyChanged();
+                }
             }
         }
 
@@ -82,9 +130,40 @@ namespace RS232.Serial
             set
             {
                 _receivedData = value;
-                RaisePropertyChanged("ReceivedData");
+                RaisePropertyChanged();
             }
         }
+
+        /// <summary>
+        /// Current handshake used by port
+        /// </summary>
+        public Handshake Handshake
+        {
+            get { return _handshake; }
+            set
+            {
+                _handshake = value;
+                _port.Handshake = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Holds type of last received but not processed message
+        /// </summary>
+        public MessageType MessageType
+        {
+            get { return _messageType; }
+            set
+            {
+                if (_messageType != value)
+                {
+                    _messageType = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+        
 
         #endregion Properties
 
@@ -94,6 +173,16 @@ namespace RS232.Serial
         /// Initializes instance of SerialPortHandler
         /// </summary>
         public SerialPortHandler()
+        {
+            MessageType = MessageType.None;
+            InitPinChangedEventHandler();
+            InitDataReceivedEventHandler();
+        }
+
+        /// <summary>
+        /// Initializes handler for pin changed event
+        /// </summary>
+        private void InitPinChangedEventHandler()
         {
             _port.PinChanged += (o, e) =>
             {
@@ -109,21 +198,41 @@ namespace RS232.Serial
                 }
             };
 
+            // Initialize timer to check DTR and RTS pins each 100ms
+            new Timer(handshake =>
+            {
+                if ((Handshake)handshake != Handshake.RequestToSendXOnXOff)
+                {
+                    IsDTRActive = _port.DtrEnable;
+                    IsRTSActive = _port.RtsEnable;
+                }
+            }, Handshake, TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
+        }
+
+        /// <summary>
+        /// Initializes handler for data received event
+        /// </summary>
+        private void InitDataReceivedEventHandler()
+        {
             _port.DataReceived += (o, e) =>
             {
                 var text = _port.ReadExisting();
-
-
 
                 if (!string.IsNullOrEmpty(text))
                 {
                     // Check if it is ping request
                     if (text.Equals(PingMessage))
                     {
-                        SendMessage(new MessageProperties(), PingResponse);
+                        MessageType = MessageType.PingRequest;
+                        SendMessageAsync(new MessageProperties(), PingResponse);
+                    }
+                    else if (text.Equals(PingResponse))
+                    {
+                        MessageType = MessageType.PingResponse;
                     }
                     else
                     {
+                        MessageType = MessageType.Plain;
                         _incomingMessage.Append(text);
                         if (text.Contains(_port.NewLine))
                         {
@@ -145,24 +254,28 @@ namespace RS232.Serial
         /// Opens new serial port connection
         /// </summary>
         /// <param name="connectionSettings">Serial port connection settings</param>
-        public void OpenConnection(ConnectionSettings connectionSettings)
+        public async Task OpenConnectionAsync(string portName, ConnectionSettings connectionSettings)
         {
             try
             {
                 if (IsOpen)
                     throw new UnauthorizedAccessException("Port is already opened.");
 
-                _port.PortName = connectionSettings.PortName;
-                _port.BaudRate = (int)(connectionSettings.BitRate);
-                _port.DataBits = connectionSettings.CharacterFormat.DataFieldSize;
-                _port.Parity = (Parity)connectionSettings.CharacterFormat.ParityControl;
-                _port.StopBits = (StopBits)connectionSettings.CharacterFormat.StopBitsNumber;
-                _port.Handshake = (Handshake)connectionSettings.FlowControl;
-                _port.NewLine = connectionSettings.TerminalString;
-                _port.ReadTimeout = connectionSettings.ReadTimeout;
-                _port.WriteTimeout = connectionSettings.WriteTimeout;
-                _port.Encoding = connectionSettings.Encoding;
 
+                if (connectionSettings != null)
+                {
+                    Handshake = (Handshake)connectionSettings.FlowControl;
+                    _port.PortName = portName;
+                    _port.BaudRate = (int)(connectionSettings.BitRate);
+                    _port.DataBits = connectionSettings.CharacterFormat.DataFieldSize;
+                    _port.Parity = (Parity)connectionSettings.CharacterFormat.ParityControl;
+                    _port.StopBits = (StopBits)connectionSettings.CharacterFormat.StopBitsNumber;
+                    _port.NewLine = connectionSettings.TerminalString;
+                    _port.ReadTimeout = connectionSettings.ReadTimeout;
+                    _port.WriteTimeout = connectionSettings.WriteTimeout;
+                    _port.Encoding = Encoding.ASCII;
+                }
+                _port.PortName = portName;
                 _port.Open();
             }
             catch (InvalidOperationException invOpEx)
@@ -205,16 +318,21 @@ namespace RS232.Serial
         /// and estabilishes connection
         /// </summary>
         /// <param name="portName">Name of port</param>
-        public void Autobaud(string portName)
+        /// <returns>Filled structure describing serial port properties</returns>
+        public async Task<ConnectionSettings> AutobaudAsync(string portName)
         {
-            var settings = new ConnectionSettings
-            {
-                PortName = portName
-            };
+            bool wasOpened = IsOpen;
+            var settings = new ConnectionSettings();
 
-            // TODO: get settings from selected port
+            if (!wasOpened)
+                OpenConnectionAsync(portName, null);
 
-            OpenConnection(settings);
+            // Test all connection settings
+
+            if (!wasOpened)
+                CloseConnectionAsync();
+
+            return settings;
         }
 
         #endregion Estabilishing connection
@@ -226,7 +344,7 @@ namespace RS232.Serial
         /// </summary>
         /// <param name="messageProperties">Parameters of message</param>
         /// <param name="message">Message plain text</param>
-        public void SendMessage(MessageProperties messageProperties, string message)
+        public async Task SendMessageAsync(MessageProperties messageProperties, string message)
         {
             try
             {
@@ -235,6 +353,11 @@ namespace RS232.Serial
                 _port.DiscardOutBuffer();
                 _port.DiscardInBuffer();
                 _port.Write(preparedMessage);
+            }
+            catch (TimeoutException tmoutEx)
+            {
+                Debug.WriteLine(tmoutEx.Message);
+                throw new TimeoutException("Przekroczono czas połączenia!");
             }
             catch (InvalidOperationException invOpEx)
             {
@@ -260,9 +383,9 @@ namespace RS232.Serial
         /// <param name="messageProperties">Parameters of message</param>
         /// <param name="message">Message plain text</param>
         /// <returns>Response message</returns>
-        public string Transaction(MessageProperties messageProperties, string message)
+        public async Task<string> TransactionAsync(MessageProperties messageProperties, string message)
         {
-            SendMessage(messageProperties, message);
+            SendMessageAsync(messageProperties, message);
 
             // TODO: wait for response
             //       return received value
@@ -277,25 +400,37 @@ namespace RS232.Serial
         /// <summary>
         /// Tests connection and measures Round Trip Delay (RTD) time
         /// </summary>
-        public string Ping()
+        public async Task<string> PingAsync()
         {
-            // TODO
-            // http://stackoverflow.com/questions/12813151/how-can-i-discover-if-a-device-is-connected-to-a-specific-serial-com-port
-            // http://stackoverflow.com/questions/18145475/serial-port-ping-functionality
-            
             if (IsOpen)
             {
+                string response;
                 var sb = new StringBuilder();
-                var response = Transaction(new MessageProperties(), PingMessage);
+                var stopwatch = new Stopwatch();
+                try
+                {
+                    stopwatch.Start();
+                    response = await TransactionAsync(new MessageProperties(), PingMessage);
+                }
+                catch
+                {
+                    response = "NONE";
+                }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+
                 sb.Append(string.Format("Data Set Ready: {0} | ", _port.DsrHolding ? "OK" : "-"));
                 sb.Append(string.Format("Clear-to-Send: {0} | ", _port.CtsHolding ? "OK" : "-"));
-                sb.Append(string.Format("Ping response: {0}", response));
+                sb.Append(string.Format("RTD: {0} ms | ", stopwatch.ElapsedMilliseconds));
+                sb.Append(string.Format("Response: {0}{1}", response, Environment.NewLine));
 
                 return sb.ToString();
             }
             else
             {
-                return string.Empty;
+                return "Port zamknięty!";
             }
         }
 
@@ -306,7 +441,7 @@ namespace RS232.Serial
         /// <summary>
         /// Closes connection
         /// </summary>
-        public void CloseConnection()
+        public async Task CloseConnectionAsync()
         {
             if (IsOpen)
             {
@@ -343,7 +478,6 @@ namespace RS232.Serial
 
             sb.Append(message);
 
-            // Terminator is added by SerialPort
             #region Append terminator
 
             sb.Append(properties.TerminalString);
@@ -359,7 +493,7 @@ namespace RS232.Serial
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void RaisePropertyChanged(string name)
+        protected void RaisePropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)

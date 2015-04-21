@@ -4,11 +4,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:converters="clr-namespace:RS232.Common.Converters;assembly=RS232.Common"
+             xmlns:vsm="clr-namespace:System.Windows;assembly=PresentationFramework"
              d1p1:Ignorable="d">
     <Application.Resources>
         <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:RS232.UI.ViewModel" />
         <converters:EnumToBoolConverter x:Key="EnumToBool" />
         <converters:EnumToVisibilityConverter x:Key="EnumToVisibility" />
         <converters:EnumValueToEnumDescriptionConverter x:Key="EnumValueToEnumDescription"/>
-    </Application.Resources>
+    </Application.Resources>    
 </Application>

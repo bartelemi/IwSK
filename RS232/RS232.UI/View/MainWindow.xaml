@@ -79,7 +79,7 @@
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
-                            <Button Height="30" Padding="0" Margin="5 15 5 5"
+                            <Button Height="30" Padding="0" Margin="5 50 5 5"
                                     Command="{Binding InputTypeCommand}"
                                     Visibility="{Binding InputType, Converter={StaticResource EnumToVisibility}, ConverterParameter=Text}">
                                 <Button.Content>
@@ -113,10 +113,14 @@
 
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
                                 Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <ToggleButton Content="DTR" Width="50" Margin="0  5 10 5"/>
-                        <ToggleButton Content="DSR" Width="50" Margin="10 5 10 5"/>
-                        <ToggleButton Content="RTS" Width="50" Margin="10 5 10 5"/>
-                        <ToggleButton Content="CTS" Width="50" Margin="10 5 10 5"/>
+                        <ToggleButton Content="DTR" Width="50" Margin="0  5 10 5"
+                                      IsEnabled="{Binding FlowControl, Converter={StaticResource EnumToBool}, ConverterParameter=Manual}"/>
+                        <ToggleButton Content="DSR" Width="50" Margin="10 5 10 5"
+                                      IsEnabled="False"/>
+                        <ToggleButton Content="RTS" Width="50" Margin="10 5 10 5"
+                                      IsEnabled="{Binding FlowControl, Converter={StaticResource EnumToBool}, ConverterParameter=Manual}"/>
+                        <ToggleButton Content="CTS" Width="50" Margin="10 5 10 5"
+                                      IsEnabled="False"/>
                         <CheckBox IsChecked="{Binding AppendDateTime}" Margin="20 9 0 9" Content="Dołącz datę"/>
                     </StackPanel>
                 </Grid>
@@ -180,22 +184,21 @@
                               SelectedValuePath="Value"/>
                     <TextBox Text="{Binding TerminalSequence.TerminalStringVisible}"
                              IsEnabled="{Binding TerminalSequence.TerminatorType, Converter={StaticResource EnumToBool}, ConverterParameter=Custom}"/>
-                    
+
                     <Label Content="Timeout odczytu [ms]"/>
                     <TextBox Text="{Binding ReadTimeout}" PreviewTextInput="Timeout_OnPreviewTextInput"/>
                     <Label Content="Timeout zapisu [ms]"/>
                     <TextBox Text="{Binding WriteTimeout}" PreviewTextInput="Timeout_OnPreviewTextInput"/>
                 </StackPanel>
 
-                <Button Content="Połącz" Margin="5 30 5 5"
+                <Button Content="Połącz" Margin="5 25 5 5"
                         Command="{Binding ConnectCommand}"
                         Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Disconnected|Error}"/>
-                <Button Content="Rozłącz" Margin="5 30 5 5"
+                <Button Content="Rozłącz" Margin="5 25 5 5"
                         Command="{Binding DisconnectCommand}"
                         Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Connected|Listening}"/>
                 <Button Content="Autobauding" Margin="5"
-                        Command="{Binding AutobaudCommand}"
-                        Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Disconnected|Error}"/>
+                        Command="{Binding AutobaudCommand}"/>
             </StackPanel>
         </Grid>
 

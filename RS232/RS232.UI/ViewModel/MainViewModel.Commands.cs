@@ -13,6 +13,7 @@ namespace RS232.UI.ViewModel
     {
         #region Commands
 
+        
         public RelayCommand ConnectCommand { get; private set; }
         public RelayCommand DisconnectCommand { get; private set; }
         public RelayCommand AutobaudCommand { get; private set; }
@@ -49,13 +50,12 @@ namespace RS232.UI.ViewModel
                         FlowControl = FlowControl,
                         ReadTimeout = ReadTimeout,
                         WriteTimeout = WriteTimeout,
-                        PortName = SelectedPortName,
                         CharacterFormat = CharacterFormat,
                         TerminalString = TerminalSequence.TerminalString
                     };
 
                     ConnectionState = ConnectionState.Connecting;
-                    _serialPortHandler.OpenConnection(settings);
+                    _serialPortHandler.OpenConnectionAsync(SelectedPortName, settings);
                     ConnectionState = ConnectionState.Connected;
                 }
                 catch (Exception ex)
@@ -73,7 +73,7 @@ namespace RS232.UI.ViewModel
                 try
                 {
                     ConnectionState = ConnectionState.Disconnecting;
-                    _serialPortHandler.CloseConnection();
+                    _serialPortHandler.CloseConnectionAsync();
                     ConnectionState = ConnectionState.Disconnected;
                 }
                 catch (Exception ex)
@@ -90,9 +90,10 @@ namespace RS232.UI.ViewModel
             {
                 try
                 {
+                    var lastConnectionState = ConnectionState;
                     ConnectionState = ConnectionState.Autobauding;
-                    _serialPortHandler.Autobaud(SelectedPortName);
-                    ConnectionState = ConnectionState.Connected;
+                    _serialPortHandler.AutobaudAsync(SelectedPortName);
+                    ConnectionState = lastConnectionState;
                 }
                 catch (Exception ex)
                 {
@@ -114,7 +115,7 @@ namespace RS232.UI.ViewModel
                         TerminalString = TerminalSequence.TerminalString,
                     };
                     ConnectionState = ConnectionState.Sending;
-                    _serialPortHandler.SendMessage(properties, MessageText);
+                    _serialPortHandler.SendMessageAsync(properties, MessageText);
                     ConnectionState = ConnectionState.Connected;
                 }
                 catch (Exception ex)
@@ -131,7 +132,7 @@ namespace RS232.UI.ViewModel
 
         private void InitTransactionCommand()
         {
-            TransactionCommand = new RelayCommand(() =>
+            TransactionCommand = new RelayCommand(async () =>
             {
                 try
                 {
@@ -141,7 +142,7 @@ namespace RS232.UI.ViewModel
                         TerminalString = TerminalSequence.TerminalString,
                     };
                     ConnectionState = ConnectionState.Sending;
-                    var response = _serialPortHandler.Transaction(properties, MessageText);
+                    var response = await _serialPortHandler.TransactionAsync(properties, MessageText);
                     ReceivedMessages = response;
                     ConnectionState = ConnectionState.Connected;
                 }
@@ -159,12 +160,12 @@ namespace RS232.UI.ViewModel
 
         private void InitPingCommand()
         {
-            PingCommand = new RelayCommand(() =>
+            PingCommand = new RelayCommand(async () =>
             {
                 try
                 {
-                    var pingMessage = _serialPortHandler.Ping();
-                    StatusText = pingMessage;
+                    var pingMessage = await _serialPortHandler.PingAsync();
+                    ReceivedMessages = pingMessage;
                 }
                 catch (Exception ex)
                 {
