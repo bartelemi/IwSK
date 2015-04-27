@@ -272,9 +272,9 @@ namespace RS232.Serial
                         }
                         else
                         {
-                            Handshake = (Handshake)connectionSettings.FlowControl;    
+                            Handshake = (Handshake)connectionSettings.FlowControl;
                         }
-                        
+
                         _port.PortName = portName;
                         _port.BaudRate = (int)(connectionSettings.BitRate);
                         _port.DataBits = connectionSettings.CharacterFormat.DataFieldSize;
@@ -417,36 +417,29 @@ namespace RS232.Serial
         {
             return Task.Run(async () =>
             {
-                if (IsOpen)
+                string response;
+                var sb = new StringBuilder();
+                var stopwatch = new Stopwatch();
+                try
                 {
-                    string response;
-                    var sb = new StringBuilder();
-                    var stopwatch = new Stopwatch();
-                    try
-                    {
-                        stopwatch.Start();
-                        response = await TransactionAsync(new MessageProperties(), PingMessage);
-                    }
-                    catch
-                    {
-                        response = "NONE";
-                    }
-                    finally
-                    {
-                        stopwatch.Stop();
-                    }
-
-                    sb.Append(string.Format("Data Set Ready: {0} | ", _port.DsrHolding ? "OK" : "-"));
-                    sb.Append(string.Format("Clear-to-Send: {0} | ", _port.CtsHolding ? "OK" : "-"));
-                    sb.Append(string.Format("RTD: {0} ms | ", stopwatch.ElapsedMilliseconds));
-                    sb.Append(string.Format("Response: {0}{1}", response, Environment.NewLine));
-
-                    return sb.ToString();
+                    stopwatch.Start();
+                    response = await TransactionAsync(new MessageProperties(), PingMessage);
                 }
-                else
+                catch
                 {
-                    return "Port zamknięty!";
+                    response = "NONE";
                 }
+                finally
+                {
+                    stopwatch.Stop();
+                }
+
+                sb.Append(string.Format("Data Set Ready: {0} | ", _port.DsrHolding ? "OK" : "--"));
+                sb.Append(string.Format("Clear-to-Send: {0} | ", _port.CtsHolding ? "OK" : "--"));
+                sb.Append(string.Format("RTD: {0} ms | ", stopwatch.ElapsedMilliseconds));
+                sb.Append(string.Format("Response: {0}{1}", response, Environment.NewLine));
+
+                return sb.ToString();
             }).Result;
         }
 
