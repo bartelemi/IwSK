@@ -13,7 +13,6 @@ namespace RS232.UI.ViewModel
     {
         #region Commands
 
-        
         public RelayCommand ConnectCommand { get; private set; }
         public RelayCommand DisconnectCommand { get; private set; }
         public RelayCommand AutobaudCommand { get; private set; }
@@ -40,7 +39,7 @@ namespace RS232.UI.ViewModel
 
         private void InitConnectCommand()
         {
-            ConnectCommand = new RelayCommand(() =>
+            ConnectCommand = new RelayCommand(async () =>
             {
                 try
                 {
@@ -55,7 +54,7 @@ namespace RS232.UI.ViewModel
                     };
 
                     ConnectionState = ConnectionState.Connecting;
-                    _serialPortHandler.OpenConnectionAsync(SelectedPortName, settings);
+                    await _serialPortHandler.OpenConnectionAsync(SelectedPortName, settings);
                     ConnectionState = ConnectionState.Connected;
                 }
                 catch (Exception ex)
@@ -68,12 +67,12 @@ namespace RS232.UI.ViewModel
 
         private void InitDisonnectCommand()
         {
-            DisconnectCommand = new RelayCommand(() =>
+            DisconnectCommand = new RelayCommand(async () =>
             {
                 try
                 {
                     ConnectionState = ConnectionState.Disconnecting;
-                    _serialPortHandler.CloseConnectionAsync();
+                    await _serialPortHandler.CloseConnectionAsync();
                     ConnectionState = ConnectionState.Disconnected;
                 }
                 catch (Exception ex)
@@ -86,13 +85,13 @@ namespace RS232.UI.ViewModel
 
         private void InitAutobaudCommand()
         {
-            AutobaudCommand = new RelayCommand(() =>
+            AutobaudCommand = new RelayCommand(async () =>
             {
                 try
                 {
                     var lastConnectionState = ConnectionState;
                     ConnectionState = ConnectionState.Autobauding;
-                    _serialPortHandler.AutobaudAsync(SelectedPortName);
+                    await _serialPortHandler.AutobaudAsync(SelectedPortName);
                     ConnectionState = lastConnectionState;
                 }
                 catch (Exception ex)
@@ -105,7 +104,7 @@ namespace RS232.UI.ViewModel
 
         private void InitSendCommand()
         {
-            SendCommand = new RelayCommand(() =>
+            SendCommand = new RelayCommand(async () =>
             {
                 try
                 {
@@ -115,7 +114,7 @@ namespace RS232.UI.ViewModel
                         TerminalString = TerminalSequence.TerminalString,
                     };
                     ConnectionState = ConnectionState.Sending;
-                    _serialPortHandler.SendMessageAsync(properties, MessageText);
+                    await _serialPortHandler.SendMessageAsync(properties, MessageText);
                     ConnectionState = ConnectionState.Connected;
                 }
                 catch (Exception ex)

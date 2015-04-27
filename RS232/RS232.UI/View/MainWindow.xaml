@@ -48,12 +48,14 @@
                     <TextBox Grid.Column="0" Margin="5"
                              FontSize="14" FontFamily="Consolas"
                              Text="{Binding MessageText}"
-                             ToolTip="Wpisz tutaj wiadomość do wysłania."/>
+                             ToolTip="Wpisz tutaj wiadomość do wysłania."
+                             IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}"/>
 
                     <Border Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="2" Margin="5">
                         <StackPanel VerticalAlignment="Center">
                             <Button Height="30" Padding="0" Margin="5"
-                                    Command="{Binding SendCommand}">
+                                    Command="{Binding SendCommand}"
+                                    IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="../Resources/send.png"/>
@@ -62,7 +64,8 @@
                                 </Button.Content>
                             </Button>
                             <Button Height="30" Padding="0" Margin="5"
-                                    Command="{Binding TransactionCommand}">
+                                    Command="{Binding TransactionCommand}"
+                                    IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="../Resources/transaction.png"/>
@@ -71,7 +74,8 @@
                                 </Button.Content>
                             </Button>
                             <Button Height="30" Padding="0" Margin="5"
-                                    Command="{Binding PingCommand}">
+                                    Command="{Binding PingCommand}"
+                                    IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Source="../Resources/ping.png"/>
@@ -111,17 +115,26 @@
                         </StackPanel>
                     </Border>
 
-                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2"
+                    <StackPanel Grid.Row="1"
                                 Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <ToggleButton Content="DTR" Width="50" Margin="0  5 10 5"
-                                      IsEnabled="{Binding FlowControl, Converter={StaticResource EnumToBool}, ConverterParameter=Manual}"/>
-                        <ToggleButton Content="DSR" Width="50" Margin="10 5 10 5"
-                                      IsEnabled="False"/>
-                        <ToggleButton Content="RTS" Width="50" Margin="10 5 10 5"
-                                      IsEnabled="{Binding FlowControl, Converter={StaticResource EnumToBool}, ConverterParameter=Manual}"/>
-                        <ToggleButton Content="CTS" Width="50" Margin="10 5 10 5"
-                                      IsEnabled="False"/>
-                        <CheckBox IsChecked="{Binding AppendDateTime}" Margin="20 9 0 9" Content="Dołącz datę"/>
+                        <ToggleButton Content="DTR" Width="60" Margin="0  5 10 5"
+                                      IsChecked="{Binding SerialPortHandler.IsDTRActive}"
+                                      IsEnabled="{Binding FlowControl, Converter={StaticResource EnumToBool}, ConverterParameter=Manual}"
+                                      Style="{DynamicResource PinStatus}"/>
+                        <ToggleButton Content="DSR" Width="60" Margin="10 5 10 5"
+                                      IsChecked="{Binding SerialPortHandler.IsDSRActive}"
+                                      IsEnabled="False"
+                                      Style="{DynamicResource PinStatus}"/>
+                        <ToggleButton Content="RTS" Width="60" Margin="10 5 10 5"
+                                      IsChecked="{Binding SerialPortHandler.IsRTSActive}"
+                                      IsEnabled="{Binding FlowControl, Converter={StaticResource EnumToBool}, ConverterParameter=Manual}"
+                                      Style="{DynamicResource PinStatus}"/>
+                        <ToggleButton Content="CTS" Width="60" Margin="10 5 10 5"
+                                      IsChecked="{Binding SerialPortHandler.IsCTSActive}"
+                                      IsEnabled="False"
+                                      Style="{DynamicResource PinStatus}"/>
+                        <CheckBox IsChecked="{Binding AppendDateTime}" Margin="20 9 0 9" Content="Dołącz datę"
+                                  IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -140,7 +153,7 @@
         <Grid Column="1" Margin="3">
             <StackPanel>
                 <Label Content="Ustawienia" FontSize="15" FontWeight="UltraBold"/>
-                <StackPanel>
+                <StackPanel IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Disconnected|Error}">
                     <Label Content="Port"/>
                     <ComboBox ItemsSource="{Binding SerialPortNames}"
                                   SelectedValue="{Binding SelectedPortName}"/>
@@ -196,7 +209,7 @@
                         Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Disconnected|Error}"/>
                 <Button Content="Rozłącz" Margin="5 25 5 5"
                         Command="{Binding DisconnectCommand}"
-                        Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Connected|Listening}"/>
+                        Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Connected|Error}"/>
                 <Button Content="Autobauding" Margin="5"
                         Command="{Binding AutobaudCommand}"/>
             </StackPanel>

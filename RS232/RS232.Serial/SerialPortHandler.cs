@@ -163,7 +163,7 @@ namespace RS232.Serial
                 }
             }
         }
-        
+
 
         #endregion Properties
 
@@ -254,63 +254,74 @@ namespace RS232.Serial
         /// Opens new serial port connection
         /// </summary>
         /// <param name="connectionSettings">Serial port connection settings</param>
-        public async Task OpenConnectionAsync(string portName, ConnectionSettings connectionSettings)
+        public Task OpenConnectionAsync(string portName, ConnectionSettings connectionSettings)
         {
-            try
+            return Task.Run(() =>
             {
-                if (IsOpen)
-                    throw new UnauthorizedAccessException("Port is already opened.");
-
-
-                if (connectionSettings != null)
+                try
                 {
-                    Handshake = (Handshake)connectionSettings.FlowControl;
+                    if (IsOpen)
+                        throw new UnauthorizedAccessException("Port is already opened.");
+
+                    if (connectionSettings != null)
+                    {
+                        if (connectionSettings.FlowControl == FlowControl.None ||
+                            connectionSettings.FlowControl == FlowControl.Manual)
+                        {
+                            Handshake = Handshake.None;
+                        }
+                        else
+                        {
+                            Handshake = (Handshake)connectionSettings.FlowControl;    
+                        }
+                        
+                        _port.PortName = portName;
+                        _port.BaudRate = (int)(connectionSettings.BitRate);
+                        _port.DataBits = connectionSettings.CharacterFormat.DataFieldSize;
+                        _port.Parity = (Parity)connectionSettings.CharacterFormat.ParityControl;
+                        _port.StopBits = (StopBits)connectionSettings.CharacterFormat.StopBitsNumber;
+                        _port.NewLine = connectionSettings.TerminalString;
+                        _port.ReadTimeout = connectionSettings.ReadTimeout;
+                        _port.WriteTimeout = connectionSettings.WriteTimeout;
+                        _port.Encoding = Encoding.ASCII;
+                    }
                     _port.PortName = portName;
-                    _port.BaudRate = (int)(connectionSettings.BitRate);
-                    _port.DataBits = connectionSettings.CharacterFormat.DataFieldSize;
-                    _port.Parity = (Parity)connectionSettings.CharacterFormat.ParityControl;
-                    _port.StopBits = (StopBits)connectionSettings.CharacterFormat.StopBitsNumber;
-                    _port.NewLine = connectionSettings.TerminalString;
-                    _port.ReadTimeout = connectionSettings.ReadTimeout;
-                    _port.WriteTimeout = connectionSettings.WriteTimeout;
-                    _port.Encoding = Encoding.ASCII;
+                    _port.Open();
                 }
-                _port.PortName = portName;
-                _port.Open();
-            }
-            catch (InvalidOperationException invOpEx)
-            {
-                Debug.WriteLine(invOpEx.Message);
-                if (IsOpen)
+                catch (InvalidOperationException invOpEx)
                 {
-                    throw new InvalidOperationException("Port jest już otwarty!");
-                }
-                else
-                {
-                    throw new InvalidOperationException("Port jest zamknięty!");
-                }
+                    Debug.WriteLine(invOpEx.Message);
+                    if (IsOpen)
+                    {
+                        throw new InvalidOperationException("Port jest już otwarty!");
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Port jest zamknięty!");
+                    }
 
-            }
-            catch (TimeoutException tmoutEx)
-            {
-                Debug.WriteLine(tmoutEx.Message);
-                throw new TimeoutException("Przekroczono czas połączenia!");
-            }
-            catch (UnauthorizedAccessException unAccEx)
-            {
-                Debug.WriteLine(unAccEx.Message);
-                throw new UnauthorizedAccessException("Odmowa dostępu do portu!");
-            }
-            catch (EndOfStreamException eosEX)
-            {
-                Debug.WriteLine(eosEX.Message);
-                throw new EndOfStreamException("Strumień danych zamknięty!");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                throw new Exception("Nieznany błąd!");
-            }
+                }
+                catch (TimeoutException tmoutEx)
+                {
+                    Debug.WriteLine(tmoutEx.Message);
+                    throw new TimeoutException("Przekroczono czas połączenia!");
+                }
+                catch (UnauthorizedAccessException unAccEx)
+                {
+                    Debug.WriteLine(unAccEx.Message);
+                    throw new UnauthorizedAccessException("Odmowa dostępu do portu!");
+                }
+                catch (EndOfStreamException eosEX)
+                {
+                    Debug.WriteLine(eosEX.Message);
+                    throw new EndOfStreamException("Strumień danych zamknięty!");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    throw new Exception("Nieznany błąd!");
+                }
+            });
         }
 
         /// <summary>
@@ -325,12 +336,12 @@ namespace RS232.Serial
             var settings = new ConnectionSettings();
 
             if (!wasOpened)
-                OpenConnectionAsync(portName, null);
+                await OpenConnectionAsync(portName, null);
 
             // Test all connection settings
 
             if (!wasOpened)
-                CloseConnectionAsync();
+                await CloseConnectionAsync();
 
             return settings;
         }
@@ -344,36 +355,38 @@ namespace RS232.Serial
         /// </summary>
         /// <param name="messageProperties">Parameters of message</param>
         /// <param name="message">Message plain text</param>
-        public async Task SendMessageAsync(MessageProperties messageProperties, string message)
+        public Task SendMessageAsync(MessageProperties messageProperties, string message)
         {
-            try
+            return Task.Run(() =>
             {
-                var preparedMessage = CreateMessage(message, messageProperties);
-
-                _port.DiscardOutBuffer();
-                _port.DiscardInBuffer();
-                _port.Write(preparedMessage);
-            }
-            catch (TimeoutException tmoutEx)
-            {
-                Debug.WriteLine(tmoutEx.Message);
-                throw new TimeoutException("Przekroczono czas połączenia!");
-            }
-            catch (InvalidOperationException invOpEx)
-            {
-                Debug.WriteLine(invOpEx.Message);
-                throw new InvalidOperationException("Port jest zamknięty!");
-            }
-            catch (IOException ioEx)
-            {
-                Debug.WriteLine(ioEx.Message);
-                throw new IOException("Ogólny błąd I/O!");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                throw new Exception("Nieznany błąd!");
-            }
+                try
+                {
+                    var preparedMessage = CreateMessage(message, messageProperties);
+                    _port.DiscardOutBuffer();
+                    _port.DiscardInBuffer();
+                    _port.Write(preparedMessage);
+                }
+                catch (TimeoutException tmoutEx)
+                {
+                    Debug.WriteLine(tmoutEx.Message);
+                    throw new TimeoutException("Przekroczono czas połączenia!");
+                }
+                catch (InvalidOperationException invOpEx)
+                {
+                    Debug.WriteLine(invOpEx.Message);
+                    throw new InvalidOperationException("Port jest zamknięty!");
+                }
+                catch (IOException ioEx)
+                {
+                    Debug.WriteLine(ioEx.Message);
+                    throw new IOException("Ogólny błąd I/O!");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    throw new Exception("Nieznany błąd!");
+                }
+            });
         }
 
         /// <summary>
@@ -385,7 +398,7 @@ namespace RS232.Serial
         /// <returns>Response message</returns>
         public async Task<string> TransactionAsync(MessageProperties messageProperties, string message)
         {
-            SendMessageAsync(messageProperties, message);
+            await SendMessageAsync(messageProperties, message);
 
             // TODO: wait for response
             //       return received value
@@ -402,36 +415,39 @@ namespace RS232.Serial
         /// </summary>
         public async Task<string> PingAsync()
         {
-            if (IsOpen)
+            return Task.Run(async () =>
             {
-                string response;
-                var sb = new StringBuilder();
-                var stopwatch = new Stopwatch();
-                try
+                if (IsOpen)
                 {
-                    stopwatch.Start();
-                    response = await TransactionAsync(new MessageProperties(), PingMessage);
-                }
-                catch
-                {
-                    response = "NONE";
-                }
-                finally
-                {
-                    stopwatch.Stop();
-                }
+                    string response;
+                    var sb = new StringBuilder();
+                    var stopwatch = new Stopwatch();
+                    try
+                    {
+                        stopwatch.Start();
+                        response = await TransactionAsync(new MessageProperties(), PingMessage);
+                    }
+                    catch
+                    {
+                        response = "NONE";
+                    }
+                    finally
+                    {
+                        stopwatch.Stop();
+                    }
 
-                sb.Append(string.Format("Data Set Ready: {0} | ", _port.DsrHolding ? "OK" : "-"));
-                sb.Append(string.Format("Clear-to-Send: {0} | ", _port.CtsHolding ? "OK" : "-"));
-                sb.Append(string.Format("RTD: {0} ms | ", stopwatch.ElapsedMilliseconds));
-                sb.Append(string.Format("Response: {0}{1}", response, Environment.NewLine));
+                    sb.Append(string.Format("Data Set Ready: {0} | ", _port.DsrHolding ? "OK" : "-"));
+                    sb.Append(string.Format("Clear-to-Send: {0} | ", _port.CtsHolding ? "OK" : "-"));
+                    sb.Append(string.Format("RTD: {0} ms | ", stopwatch.ElapsedMilliseconds));
+                    sb.Append(string.Format("Response: {0}{1}", response, Environment.NewLine));
 
-                return sb.ToString();
-            }
-            else
-            {
-                return "Port zamknięty!";
-            }
+                    return sb.ToString();
+                }
+                else
+                {
+                    return "Port zamknięty!";
+                }
+            }).Result;
         }
 
         #endregion Testing connection
@@ -441,15 +457,19 @@ namespace RS232.Serial
         /// <summary>
         /// Closes connection
         /// </summary>
-        public async Task CloseConnectionAsync()
+        public Task CloseConnectionAsync()
         {
-            if (IsOpen)
+            return Task.Run(() =>
             {
-                _port.DiscardOutBuffer();
-                _port.DiscardInBuffer();
-                _port.Close();
-            }
+                if (IsOpen)
+                {
+                    _port.DiscardOutBuffer();
+                    _port.DiscardInBuffer();
+                    _port.Close();
+                }
+            });
         }
+
 
         #endregion Closing connection
 

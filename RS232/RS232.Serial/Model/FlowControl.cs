@@ -43,6 +43,6 @@ namespace RS232.Serial.Model
         /// Both the Request-to-Send (RTS) hardware control and the XON/XOFF software controls are used.
         /// </summary>
         [Description("Ręczna")]
-        Manual
+        Manual = 10
     }
 }

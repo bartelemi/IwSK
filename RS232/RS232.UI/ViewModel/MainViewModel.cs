@@ -285,6 +285,14 @@ namespace RS232.UI.ViewModel
                 };
             }
         }
+
+        /// <summary>
+        /// Reference to serial port handler
+        /// </summary>
+        public SerialPortHandler SerialPortHandler
+        {
+            get { return _serialPortHandler; }
+        }
         #endregion Properties
 
         #region Initialization
@@ -367,14 +375,6 @@ namespace RS232.UI.ViewModel
         {
             switch (e.PropertyName)
             {
-                case "IsDSRActive":
-                {
-                    break;
-                }
-                case "IsCTSActive":
-                {
-                    break;
-                }
                 case "ReceivedData":
                 {
                     var data = _serialPortHandler.ReceivedData;
