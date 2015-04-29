@@ -305,7 +305,7 @@ namespace RS232.UI.ViewModel
             InitSerialPortSettings();
             InitCommands();
 
-            _serialPortHandler.PropertyChanged += new PropertyChangedEventHandler(SerialPortHandler_StateChanged);
+            _serialPortHandler.OnDataReceived += new SerialPortHandler.DataReceived(SerialPortDataReceived);
         }
 
         /// <summary>
@@ -368,24 +368,22 @@ namespace RS232.UI.ViewModel
 
         /// <summary>
         /// Updates viewModel according to changes in serial port state
-        /// </summary>
-        /// <param name="sender">Sender of event</param>
-        /// <param name="e">Event arguments</param>
-        private void SerialPortHandler_StateChanged(object sender, PropertyChangedEventArgs e)
+        /// </summary
+        /// <param name="data">Data received</param>
+        private void SerialPortDataReceived(string data, MessageType type)
         {
-            switch (e.PropertyName)
+            switch (type)
             {
-                case "ReceivedData":
-                {
-                    var data = _serialPortHandler.ReceivedData;
-                    if (!string.IsNullOrEmpty(data) &&
-                        !data.Equals("OK\r\n"))
-                        ReceivedMessages = data;
+                case MessageType.Plain:
+                    ReceivedMessages = data;
                     break;
-                }
+                case MessageType.TransactionBegin:
+                    //TODO: Handle transaction begin
+                    break;
+                default:
+                    break;
             }
         }
-
         #endregion Serial port events
     }
 }

@@ -12,28 +12,39 @@ namespace RS232.Serial.Model
     public enum MessageType
     {
         /// <summary>
-        /// Ping request
+        /// None or message processed
         /// </summary>
-        PingRequest,
-
-        /// <summary>
-        /// Ping response
-        /// </summary>
-        PingResponse,
+        None = 0x00,
 
         /// <summary>
         /// Ordinary message
         /// </summary>
-        Plain,
+        Plain = 0x01,
+        
+        /// <summary>
+        /// Ping request
+        /// </summary>
+        PingRequest = 0x02,
 
         /// <summary>
-        /// Transaction - send and wait for response
+        /// Ping response
         /// </summary>
-        Transaction,
+        PingResponse = 0x12,
 
         /// <summary>
-        /// None or message processed
+        /// TransactionBegin - send and wait for response
         /// </summary>
-        None,
+        TransactionBegin = 0x03,
+
+        /// <summary>
+        /// TransactionEnd - response for transaction
+        /// </summary>
+        TransactionEnd = 0x23,
+
+        /// <summary>
+        /// Error - unrecognized message type
+        /// <remarks>Shouldn't be send</remarks>
+        /// </summary>
+        Error = 0xFF,
     }
 }

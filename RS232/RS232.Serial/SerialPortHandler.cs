@@ -164,7 +164,6 @@ namespace RS232.Serial
             }
         }
 
-
         #endregion Properties
 
         #region Initialization
@@ -175,8 +174,8 @@ namespace RS232.Serial
         public SerialPortHandler()
         {
             MessageType = MessageType.None;
+            _port.DataReceived += new SerialDataReceivedEventHandler(SerialPortDataReceived);
             InitPinChangedEventHandler();
-            InitDataReceivedEventHandler();
         }
 
         /// <summary>
@@ -207,41 +206,6 @@ namespace RS232.Serial
                     IsRTSActive = _port.RtsEnable;
                 }
             }, Handshake, TimeSpan.FromMilliseconds(0), TimeSpan.FromMilliseconds(100));
-        }
-
-        /// <summary>
-        /// Initializes handler for data received event
-        /// </summary>
-        private void InitDataReceivedEventHandler()
-        {
-            _port.DataReceived += (o, e) =>
-            {
-                var text = _port.ReadExisting();
-
-                if (!string.IsNullOrEmpty(text))
-                {
-                    // Check if it is ping request
-                    if (text.Equals(PingMessage))
-                    {
-                        MessageType = MessageType.PingRequest;
-                        SendMessageAsync(new MessageProperties(), PingResponse);
-                    }
-                    else if (text.Equals(PingResponse))
-                    {
-                        MessageType = MessageType.PingResponse;
-                    }
-                    else
-                    {
-                        MessageType = MessageType.Plain;
-                        _incomingMessage.Append(text);
-                        if (text.Contains(_port.NewLine))
-                        {
-                            ReceivedData = _incomingMessage.ToString();
-                            _incomingMessage.Clear();
-                        }
-                    }
-                }
-            };
         }
 
         #endregion Initialization
@@ -350,6 +314,57 @@ namespace RS232.Serial
 
         #region Data exchange
 
+        #region Data receive
+
+        /// <summary>
+        /// Data received delegate
+        /// </summary>
+        /// <param name="data">Data</param>
+        public delegate void DataReceived(string data, MessageType type);
+
+        /// <summary>
+        /// Raised when data received
+        /// </summary>
+        public event DataReceived OnDataReceived;
+
+        /// <summary>
+        /// Handles serial port data received event
+        /// </summary>
+        /// <param name="sender">Sender of event</param>
+        /// <param name="e">Event arguments</param>
+        private async void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            string text = _port.ReadExisting();
+            _incomingMessage.Append(text);
+
+            if (text.EndsWith(_port.NewLine))
+            {
+                bool isPreprocessed = DismantleMessage(_incomingMessage.ToString());
+                _incomingMessage.Clear();
+
+                if (isPreprocessed)
+                {
+                    if (MessageType == MessageType.PingRequest)
+                    {
+                        var settings = new MessageProperties
+                        {
+                            AppendDateTime = false,
+                            MessageType = MessageType.PingResponse,
+                            TerminalString = _port.NewLine
+                        };
+                        await SendMessageAsync(settings, PingResponse);
+                    }
+
+                    if(OnDataReceived != null)
+                        OnDataReceived(ReceivedData, MessageType);
+                }
+            }
+        }
+
+        #endregion Data receive
+
+        #region Data send
+
         /// <summary>
         /// Sends message through serial port
         /// </summary>
@@ -400,11 +415,22 @@ namespace RS232.Serial
         {
             await SendMessageAsync(messageProperties, message);
 
-            // TODO: wait for response
-            //       return received value
+            var t = Task.Run(() =>
+            {
+                while (MessageType != MessageType.TransactionEnd &&
+                       MessageType != MessageType.PingResponse)
+                {
 
+                }
+            });
+            if (t.Wait(_port.ReadTimeout))
+            {
+                return ReceivedData;
+            }
             return string.Empty;
         }
+
+        #endregion Data send
 
         #endregion Data exchange
 
@@ -417,17 +443,29 @@ namespace RS232.Serial
         {
             return Task.Run(async () =>
             {
-                string response;
+                string response = string.Empty;
+                string expectedResponse = string.Format("{0}{1}", PingResponse, _port.NewLine);
                 var sb = new StringBuilder();
                 var stopwatch = new Stopwatch();
                 try
                 {
+                    var settings = new MessageProperties
+                    {
+                        MessageType = MessageType.PingRequest,
+                        AppendDateTime = false,
+                        TerminalString = _port.NewLine
+                    };
+
                     stopwatch.Start();
-                    response = await TransactionAsync(new MessageProperties(), PingMessage);
+                    response = await TransactionAsync(settings, PingMessage);
+                    if (response != expectedResponse)
+                    {
+                        response = "Err";
+                    }
                 }
                 catch
                 {
-                    response = "NONE";
+                    response = "None";
                 }
                 finally
                 {
@@ -437,7 +475,7 @@ namespace RS232.Serial
                 sb.Append(string.Format("Data Set Ready: {0} | ", _port.DsrHolding ? "OK" : "--"));
                 sb.Append(string.Format("Clear-to-Send: {0} | ", _port.CtsHolding ? "OK" : "--"));
                 sb.Append(string.Format("RTD: {0} ms | ", stopwatch.ElapsedMilliseconds));
-                sb.Append(string.Format("Response: {0}{1}", response, Environment.NewLine));
+                sb.Append(string.Format("Response: {0}", response));
 
                 return sb.ToString();
             }).Result;
@@ -478,7 +516,8 @@ namespace RS232.Serial
         /// <returns>Fully configured message</returns>
         private string CreateMessage(string message, MessageProperties properties)
         {
-            var sb = new StringBuilder();
+            int messageType = (int) properties.MessageType;
+            var sb = new StringBuilder(messageType.ToString("00"));
 
             #region Append date time
 
@@ -498,6 +537,49 @@ namespace RS232.Serial
             #endregion Append terminator
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Checks received message and returns it's type according to header
+        /// </summary>
+        /// <param name="input">Received message</param>
+        /// <returns>True if message preprocessed successfully</returns>
+        private bool DismantleMessage(string input)
+        {
+            try
+            {
+                bool isWellFormated = false;
+
+                // Try to get message type
+                int type;
+                if (int.TryParse(input.Substring(0, 2), out type))
+                {
+                    MessageType messageType;
+                    if (MessageType.TryParse(type.ToString(), out messageType))
+                    {
+                        MessageType = messageType;
+                        isWellFormated = true;
+                    }
+                }
+
+                // Try to get message data
+                if (isWellFormated)
+                {    
+                    ReceivedData = input.Substring(2, input.Length - 2);
+                }
+                else
+                {
+                    throw new FormatException("Bad format of message.");
+                }
+
+                return true;
+            }
+            catch
+            {
+                MessageType = MessageType.Error;
+                ReceivedData = string.Empty;
+                return false;
+            }
         }
 
         #endregion Helpers

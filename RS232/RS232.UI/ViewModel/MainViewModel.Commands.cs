@@ -110,6 +110,7 @@ namespace RS232.UI.ViewModel
                 {
                     var properties = new MessageProperties
                     {
+                        MessageType = MessageType.Plain,
                         AppendDateTime = AppendDateTime,
                         TerminalString = TerminalSequence.TerminalString,
                     };
@@ -137,6 +138,7 @@ namespace RS232.UI.ViewModel
                 {
                     var properties = new MessageProperties
                     {
+                        MessageType = MessageType.TransactionBegin,
                         AppendDateTime = AppendDateTime,
                         TerminalString = TerminalSequence.TerminalString,
                     };

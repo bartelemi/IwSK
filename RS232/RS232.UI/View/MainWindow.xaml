@@ -11,7 +11,7 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         d:DataContext="{d:DesignInstance vm:MainViewModel, IsDesignTimeCreatable=True}"
         Title="RS-232 - DTE Communication" 
-        Height="700" Width="800" MinHeight="600" MinWidth="800"
+        MinHeight="700" MinWidth="750" Height="700" Width="800"
         Icon="../Resources/icon.png">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -48,73 +48,83 @@
                     <TextBox Grid.Column="0" Margin="5"
                              FontSize="14" FontFamily="Consolas"
                              Text="{Binding MessageText}"
+                             TextWrapping="Wrap"
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Disabled"
                              ToolTip="Wpisz tutaj wiadomość do wysłania."
                              IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}"/>
 
                     <Border Grid.Column="1" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="2" Margin="5">
-                        <StackPanel VerticalAlignment="Center">
-                            <Button Height="30" Padding="0" Margin="5"
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel VerticalAlignment="Top" Grid.Row="0">
+                                <Button Height="30" Padding="0" Margin="5"
                                     Command="{Binding SendCommand}"
                                     IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="../Resources/send.png"/>
-                                        <Label Content="Wyślij"/>
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                            <Button Height="30" Padding="0" Margin="5"
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="../Resources/send.png"/>
+                                            <Label Content="Wyślij"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button Height="30" Padding="0" Margin="5"
                                     Command="{Binding TransactionCommand}"
                                     IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="../Resources/transaction.png"/>
-                                        <Label Content="Transakcja"/>
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                            <Button Height="30" Padding="0" Margin="5"
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="../Resources/transaction.png"/>
+                                            <Label Content="Transakcja"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button Height="30" Padding="0" Margin="5"
                                     Command="{Binding PingCommand}"
                                     IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="../Resources/ping.png"/>
-                                        <Label Content="Ping"/>
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                            <Button Height="30" Padding="0" Margin="5 50 5 5"
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="../Resources/ping.png"/>
+                                            <Label Content="Ping"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Bottom" Grid.Row="1">
+                                <Button Height="30" Padding="0" Margin="5"
                                     Command="{Binding InputTypeCommand}"
                                     Visibility="{Binding InputType, Converter={StaticResource EnumToVisibility}, ConverterParameter=Text}">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="../Resources/ABC.png"/>
-                                        <Label Content="Tekst"/>
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                            <Button Height="30" Padding="0" Margin="5 15 5 5"
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="../Resources/ABC.png"/>
+                                            <Label Content="Tekst"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button Height="30" Padding="0" Margin="5"
                                     Command="{Binding InputTypeCommand}"
                                     Visibility="{Binding InputType, Converter={StaticResource EnumToVisibility}, ConverterParameter=Binary}">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="../Resources/0xFF.png"/>
-                                        <Label Content="Hex"/>
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                            <Button Height="30" Padding="0" Margin="5"
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="../Resources/0xFF.png"/>
+                                            <Label Content="Hex"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button Height="30" Padding="0" Margin="5"
                                     Command="{Binding ClearMessageTextCommand}">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="../Resources/clean.png"/>
-                                        <Label Content="Wyczyść"/>
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                        </StackPanel>
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="../Resources/clean.png"/>
+                                            <Label Content="Wyczyść"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
                     </Border>
-
                     <StackPanel Grid.Row="1"
                                 Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <ToggleButton Content="DTR" Width="60" Margin="0  5 10 5"
@@ -143,8 +153,13 @@
 
             <Border Grid.Row="3" BorderBrush="Black" BorderThickness="2" Background="PeachPuff">
                 <Grid Margin="5">
-                    <TextBlock Text="{Binding ReceivedMessages}" 
-                               FontSize="14" FontFamily="Consolas"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                  HorizontalScrollBarVisibility="Hidden"
+                                  extensions:ScrollViewerExtensions.AlwaysScrollToEnd="True">
+                        <TextBlock Text="{Binding ReceivedMessages}" 
+                                   FontSize="14" FontFamily="Consolas"
+                                   TextWrapping="WrapWithOverflow"/>
+                    </ScrollViewer>
                 </Grid>
             </Border>
         </Grid>
