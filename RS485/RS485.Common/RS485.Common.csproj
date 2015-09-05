@@ -30,15 +30,39 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\EnumToBoolConverter.cs" />
+    <Compile Include="Converters\EnumToVisibilityConverter.cs" />
+    <Compile Include="Converters\EnumValueToEnumDescriptionConverter.cs" />
+    <Compile Include="Converters\StringToVisibleASCIIConverter.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
+    <Compile Include="Extensions\ScrollViewerExtension.cs" />
+    <Compile Include="Model\BitRate.cs" />
+    <Compile Include="Model\CharacterFormat.cs" />
+    <Compile Include="Model\ConnectionSettings.cs" />
+    <Compile Include="Model\ConnectionState.cs" />
+    <Compile Include="Model\FlowControl.cs" />
+    <Compile Include="Model\InputType.cs" />
+    <Compile Include="Model\MessageProperties.cs" />
+    <Compile Include="Model\MessageType.cs" />
+    <Compile Include="Model\ModbusSettings.cs" />
+    <Compile Include="Model\ParityControl.cs" />
+    <Compile Include="Model\StopBitsNumber.cs" />
+    <Compile Include="Model\TerminalSequence.cs" />
+    <Compile Include="Model\TerminatorType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
