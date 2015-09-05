@@ -14,5 +14,7 @@ namespace RS485.Serial.Model
         public string TerminalString { get; set; }
         public FlowControl FlowControl { get; set; }
         public CharacterFormat CharacterFormat { get; set; }
+
+        public string PortName { get; set; }
     }
 }

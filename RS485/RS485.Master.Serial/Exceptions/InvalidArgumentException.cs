@@ -11,7 +11,7 @@ namespace RS485.Master.Serial.Exceptions
         public InvalidArgumentException(string message)
             : base(message)
         {
-                
+
         }
     }
 }
