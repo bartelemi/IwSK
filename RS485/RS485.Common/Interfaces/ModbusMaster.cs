@@ -1,12 +1,6 @@
 ﻿using RS485.Common.Exceptions;
 using RS485.Common.Model;
-using RS485.Serial.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using RS485.Common.Model;
 
 namespace RS485.Common.Interfaces
 {
