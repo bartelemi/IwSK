@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
-namespace RS485.Serial.Model
+namespace RS485.Common.Model
 {
     public class ConnectionSettings
     {

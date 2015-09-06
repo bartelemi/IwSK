@@ -1,11 +1,11 @@
 ﻿using RS485.Common.Serial;
 using RS485.Master.Serial.Exceptions;
-using RS485.Serial.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RS485.Common.Model;
 
 namespace RS485.Master.Serial.Implementation
 {

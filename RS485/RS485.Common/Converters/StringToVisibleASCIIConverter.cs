@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Data;
+﻿using System.Text;
 
-namespace RS232.Common.Converters
+namespace RS485.Common.Converters
 {
     public class StringToVisibleASCIIConverter
     {

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace RS232.Common.Converters
+namespace RS485.Common.Converters
 {
     [ValueConversion(typeof(Enum), typeof(Visibility))]
     public class EnumToVisibilityConverter : IValueConverter

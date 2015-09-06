@@ -1,12 +1,7 @@
-﻿using RS232.Common.Converters;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using RS485.Common.Converters;
 
-namespace RS485.Serial.Model
+namespace RS485.Common.Model
 {
     public class TerminalSequence : INotifyPropertyChanged
     {

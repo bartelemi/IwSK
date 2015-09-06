@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace RS232.Common.Extensions
+namespace RS485.Common.Extensions
 {
     public class ScrollViewerExtensions
     {

@@ -51,6 +51,10 @@
     <Compile Include="Exceptions\InternalErrorException.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\ScrollViewerExtension.cs" />
+    <Compile Include="GuiCommon\Core\IModbusCore.cs" />
+    <Compile Include="GuiCommon\Models\EventArgs\LogMessageReceivedEventArgs.cs" />
+    <Compile Include="GuiCommon\Models\ExecuteActionData.cs" />
+    <Compile Include="GuiCommon\Models\LogMessageType.cs" />
     <Compile Include="Model\BitRate.cs" />
     <Compile Include="Model\CharacterFormat.cs" />
     <Compile Include="Model\ConnectionSettings.cs" />

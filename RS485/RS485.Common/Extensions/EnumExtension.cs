@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Markup;
 
-namespace RS232.Common.Extensions
+namespace RS485.Common.Extensions
 {
     public class EnumExtension : MarkupExtension
     {

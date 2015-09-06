@@ -1,5 +1,4 @@
 ﻿using RS485.Common.Exceptions;
-using RS485.Serial.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,6 +12,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using RS485.Common.Model;
+
 //using System.Windows.Media.Animation;
 
 namespace RS485.Common.Serial

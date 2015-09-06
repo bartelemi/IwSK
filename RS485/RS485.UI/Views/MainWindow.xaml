@@ -1,0 +1,48 @@
+﻿<Window x:Class="RS485.UI.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:vm="clr-namespace:RS485.UI.ViewModel"
+        d:DataContext="{d:DesignInstance vm:MainWindowViewModel, IsDesignTimeCreatable=True}"
+        Title="MainWindow" mc:Ignorable="d" Height="468.25" Width="832" >
+    <Grid Margin="5">
+        <Grid ZIndex="100" Opacity="0.6" Background="AliceBlue" Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image gif:ImageBehavior.AnimatedSource="../Content/loader.gif" 
+                       gif:ImageBehavior.AutoStart="True" 
+                       gif:ImageBehavior.RepeatBehavior="Forever"  
+                       Width="60" Margin="10" />
+                <TextBlock Text="Loading..." VerticalAlignment="Center" FontSize="30" />
+            </StackPanel>
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="130" />
+            </Grid.RowDefinitions>
+            
+            <Grid>
+                <StackPanel HorizontalAlignment="Left" Margin="20">
+                    <StackPanel Orientation="Horizontal" Margin="0 5">
+                        <TextBlock Text="Test label: " />
+                        <TextBox Text="{Binding TestBindProperty}" Width="500"/>
+                    </StackPanel>
+                    <Button Content="Test command" Command="{Binding TestBindCommand}" />
+                </StackPanel>
+            </Grid>
+            
+            <GridSplitter Grid.Row="1"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"
+                      ShowsPreview="True"
+                      Height="3" />
+            <GroupBox Header="Output" Padding="3" Grid.Row="2" Margin="5">
+                <TextBox IsReadOnly="True" Text="{Binding OutputTextBoxContent}" TextChanged="OnLogTextBoxTextChanged" 
+                     VerticalScrollBarVisibility="Auto" x:Name="LogTextBox" />
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>
