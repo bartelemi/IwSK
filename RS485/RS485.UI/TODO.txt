@@ -17,6 +17,8 @@ Text box na odpowiedŸ w którym pojawi¹ siê dane w przypadku rozkazu 2
 
 Text box na ewentualne b³êdy wewnêtrze zwi¹zane np z brakiem dostêpu do portu itp.
 
+Button: wykonaj rozkaz
+
 Dla trybu slave:
 Wybór portu
 Wybór adresu stacji (1-247)
@@ -25,3 +27,5 @@ Text box na wiadomoœæ otrzyman¹ w przypadku rozkazu nr 1
 Input na wiadomoœæ wysy³an¹ w przupadku rozkazu nr 2
 
 Text box na ewentualne b³êdy wewnêtrze zwi¹zane np z brakiem dostêpu do portu itp.
+
+Button: rozpocznij nas³uch
