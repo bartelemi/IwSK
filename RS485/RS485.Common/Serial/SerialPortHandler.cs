@@ -340,6 +340,16 @@ namespace RS485.Common.Serial
 
         #region Data send
 
+        public Task SendMessageAsync(string message)
+        {
+            var settings = new MessageProperties
+                        {
+                            AppendDateTime = false,
+                            MessageType = MessageType.Plain,
+                            TerminalString = _port.NewLine
+                        };
+            return SendMessageAsync(settings, message);
+        }
         /// <summary>
         /// Sends message through serial port
         /// </summary>
