@@ -1,4 +1,5 @@
-﻿using RS485.Master.Serial.Exceptions;
+﻿using RS485.Common.Serial;
+using RS485.Master.Serial.Exceptions;
 using RS485.Serial.Model;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,8 @@ namespace RS485.Master.Serial.Implementation
 
         private ConnectionSettings connectionSettings;
 
+        private SerialPortHandler serialPort = new SerialPortHandler();
+
         public void setConnectionSettings(ConnectionSettings settings)
         {
             this.connectionSettings = settings;
@@ -31,18 +34,40 @@ namespace RS485.Master.Serial.Implementation
             this.modbusSettings = settings;
         }
 
-        public void sendFirstCommand(string slaveAddress, string message)
+        public ModbusMasterImpl(ConnectionSettings connectionSettings, ModbusSettings modbusSettings)
         {
-            throw new NotImplementedException();
+            this.connectionSettings = connectionSettings;
+            this.modbusSettings = modbusSettings;
         }
 
-        public void sendSecondCommand(string slaveAddress)
+        public async void sendFirstCommand(string slaveAddress, string message)
+        {
+            try
+            {
+                await serialPort.OpenConnectionAsync(connectionSettings);
+            }
+            catch (Exception e)
+            {
+                errorOccuredHandlers.Invoke(e.Message);
+                return;
+            }
+            
+        }
+
+        public async void sendSecondCommand(string slaveAddress)
         {
             if ("0".Equals(slaveAddress))
             {
                 throw new InvalidArgumentException("Operacja nr. 2 może być realizowana tylko dla transmisji adresowanej!");
             }
-
+            try
+            {
+                await serialPort.OpenConnectionAsync(connectionSettings);
+            }
+            catch (Exception e)
+            {
+                errorOccuredHandlers.Invoke(e.Message);
+            }
         }
     }
 }

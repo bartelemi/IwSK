@@ -9,13 +9,15 @@ namespace RS485.Master.Serial.Model
     
     class Frame
     {
-        private string slaveAddress;
+        private string deviceAddress;
         private string message;
         private string lrc;
 
-        public string SlaveAddress
+        public const string DATA_SEPARATOR = ";";
+
+        public string DeviceAddress
         {
-            get { return this.slaveAddress; }
+            get { return this.deviceAddress; }
         }
 
         public string Message
@@ -28,11 +30,16 @@ namespace RS485.Master.Serial.Model
             get { return this.lrc; }
         }
 
-        public Frame(string slaveAddress, string message, string lrc)
+        public Frame(string deviceAddress, string message, string lrc)
         {
-            this.slaveAddress = slaveAddress;
+            this.deviceAddress = deviceAddress;
             this.message = message;
             this.lrc = lrc;
+        }
+
+        public string getStringToSend()
+        {
+            return deviceAddress + DATA_SEPARATOR + message + DATA_SEPARATOR + lrc;
         }
     }
 }

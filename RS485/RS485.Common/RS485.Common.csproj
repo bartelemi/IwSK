@@ -48,6 +48,7 @@
     <Compile Include="Converters\EnumToVisibilityConverter.cs" />
     <Compile Include="Converters\EnumValueToEnumDescriptionConverter.cs" />
     <Compile Include="Converters\StringToVisibleASCIIConverter.cs" />
+    <Compile Include="Exceptions\InternalErrorException.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\ScrollViewerExtension.cs" />
     <Compile Include="Model\BitRate.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Model\TerminalSequence.cs" />
     <Compile Include="Model\TerminatorType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serial\SerialPortHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
