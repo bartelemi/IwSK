@@ -2,6 +2,7 @@ W czêœci GUI nale¿y wykonaæ nastêpuj¹ce elementy:
 1. Wybór pomiêdzy trybem master/slave
 
 Dla trybu master:
+Wybór portu
 Wybór trybu transakcji (adresowa lub rozg³oszeniowa)
 Wybór rozkazu (1 lub 2, rokaz numer 2 dostêpny do wyboru tylko gdy zosta³a wybrana transakcja adresowa)
 Argumenty (text box) (aktywny tylko w przypadku wybrania rozkazu 1)
@@ -17,6 +18,7 @@ Text box na odpowiedŸ w którym pojawi¹ siê dane w przypadku rozkazu 2
 Text box na ewentualne b³êdy wewnêtrze zwi¹zane np z brakiem dostêpu do portu itp.
 
 Dla trybu slave:
+Wybór portu
 Wybór adresu stacji (1-247)
 Timeout w transmisji (0-1s co 10ms)
 Text box na wiadomoœæ otrzyman¹ w przypadku rozkazu nr 1
