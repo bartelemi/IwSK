@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="Exceptions\InvalidArgumentException.cs" />
     <Compile Include="Implementation\ModbusMasterImpl.cs" />
-    <Compile Include="Interface\ModbusMaster.cs" />
     <Compile Include="Model\Transaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -11,10 +11,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using RS485.Common.Exceptions;
+using RS485.Common.Interfaces;
 
 namespace RS485.Master.Serial.Implementation
 {
-    class ModbusMasterImpl : ModbusMaster
+    public class ModbusMasterImpl : ModbusMaster
     {
 
         public event FirstCommandCompleted firstCommandCompletedHandlers;

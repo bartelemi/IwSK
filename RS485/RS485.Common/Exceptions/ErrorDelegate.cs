@@ -4,10 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RS485.Slave.Serial
+namespace RS485.Common.Exceptions
 {
-    interface ModbusSlave
-    {
-        //public void hello(Mod)
-    }
+    public delegate void ErrorOccured(String errorMessage);
 }
