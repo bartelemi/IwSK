@@ -33,6 +33,7 @@ namespace RS485.Master.Serial
 
     public enum CommandResult
     {
-        success, fail
+        SUCCESS, FAIL
     }
+
 }

@@ -51,11 +51,13 @@
     <Compile Include="Exceptions\InternalErrorException.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\ScrollViewerExtension.cs" />
+    <Compile Include="Implementation\FrameBuilder.cs" />
     <Compile Include="Model\BitRate.cs" />
     <Compile Include="Model\CharacterFormat.cs" />
     <Compile Include="Model\ConnectionSettings.cs" />
     <Compile Include="Model\ConnectionState.cs" />
     <Compile Include="Model\FlowControl.cs" />
+    <Compile Include="Model\Frame.cs" />
     <Compile Include="Model\InputType.cs" />
     <Compile Include="Model\MessageProperties.cs" />
     <Compile Include="Model\MessageType.cs" />

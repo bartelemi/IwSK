@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RS485.Master.Serial.Model
+namespace RS485.Common.Model
 {
     
-    class Frame
+    public class Frame
     {
         private string deviceAddress;
         private string message;

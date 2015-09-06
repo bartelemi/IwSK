@@ -1,21 +1,21 @@
-﻿using RS485.Master.Serial.Model;
+﻿using RS485.Common.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RS485.Master.Serial.Implementation
+namespace RS485.Common.Implementation
 {
-    class FrameBuilder
+    public class FrameBuilder
     {
-        public Frame buildFrame(string deviceAddress, string message)
+        public static Frame buildFrame(string deviceAddress, string message)
         {
             string LRC = calculateLRC(deviceAddress + message);
             return new Frame(deviceAddress, message, LRC);
         }
 
-        private string calculateLRC(string input)
+        private static string calculateLRC(string input)
         {
             byte[] inputBytes = Encoding.ASCII.GetBytes(input);
             byte[] rawOutputLrc = new byte[1];
