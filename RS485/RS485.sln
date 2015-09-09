@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RS485.Master", "RS485.Master", "{600E6237-184F-4480-9BD1-EB318623F247}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RS485.Common", "RS485.Common\RS485.Common.csproj", "{2E547B16-6935-4452-A18B-D8342D446FCA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RS485.UI", "RS485.UI\RS485.UI.csproj", "{FE5F9A56-A9AA-4A90-B473-9A6732C8EBFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RS485.Integration.Tests", "RS485.Integration.Tests\RS485.Integration.Tests.csproj", "{6D3FE5B3-D431-4710-B05E-31290DA9767C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{FE5F9A56-A9AA-4A90-B473-9A6732C8EBFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE5F9A56-A9AA-4A90-B473-9A6732C8EBFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE5F9A56-A9AA-4A90-B473-9A6732C8EBFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D3FE5B3-D431-4710-B05E-31290DA9767C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D3FE5B3-D431-4710-B05E-31290DA9767C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D3FE5B3-D431-4710-B05E-31290DA9767C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D3FE5B3-D431-4710-B05E-31290DA9767C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
