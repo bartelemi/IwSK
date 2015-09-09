@@ -2,14 +2,14 @@
 
 namespace RS485.Common.GuiCommon.Models.EventArgs
 {
-    public delegate void LogMessageReceivedEventHandler(LogMessageReceivedEventArgs args);
+    public delegate void LogMessageOccuredEventHandler(LogMessageOccuredEventArgs args);
 
-    public class LogMessageReceivedEventArgs : System.EventArgs
+    public class LogMessageOccuredEventArgs : System.EventArgs
     {
         public LogMessageType MessageType { get; private set; }
         public string Content { get; private set; }
 
-        public LogMessageReceivedEventArgs(LogMessageType messageType, string content)
+        public LogMessageOccuredEventArgs(LogMessageType messageType, string content)
         {
             MessageType = messageType;
             Content = content;

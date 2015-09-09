@@ -4,12 +4,14 @@ namespace RS485.UI.ViewModel
     {
         private void IntializeEvents()
         {
-            ModbusCore.LogMessageReceived += LogMessageReceived;
+            ModbusMaster.LogMessageOccured += LogMessageReceived;
+            ModbusSlave.LogMessageOccured  += LogMessageReceived;
         }
 
         private void DisposeEvents()
         {
-            ModbusCore.LogMessageReceived -= LogMessageReceived;
+            ModbusMaster.LogMessageOccured -= LogMessageReceived;
+            ModbusSlave.LogMessageOccured  -= LogMessageReceived;
         }
     }
 }

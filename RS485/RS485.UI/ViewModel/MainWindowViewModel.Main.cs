@@ -1,28 +1,33 @@
-using RS485.Common.GuiCommon.Core;
 using RS485.Common.GuiCommon.Models;
 using RS485.Common.GuiCommon.Models.EventArgs;
+using RS485.Common.Interfaces;
 using RS485.UI.Helpers;
 
 namespace RS485.UI.ViewModel
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        private IModbusCore ModbusCore { get { return _modbusCore; } }
-        private readonly IModbusCore _modbusCore;
+        private IModbusMaster ModbusMaster { get { return _modbusMaster; } }
+        private readonly IModbusMaster _modbusMaster;
 
-        public MainWindowViewModel(IModbusCore modbusCore)
+        private IModbusSlave ModbusSlave { get { return _modbusSlave; } }
+        private readonly IModbusSlave _modbusSlave;
+
+        public MainWindowViewModel(IModbusMaster modbusMaster, IModbusSlave modbusSlave)
         {
-            _modbusCore = modbusCore;
+            _modbusMaster = modbusMaster;
+            _modbusSlave = modbusSlave;
+
             IntializeEvents();
             InitializeCommands();
         }
 
         private void ExecuteAction()
         {
-            LogMessageReceived(new LogMessageReceivedEventArgs(LogMessageType.Info, string.Format("Test button: {0}", TestBindProperty)));
+            LogMessageReceived(new LogMessageOccuredEventArgs(LogMessageType.Info, string.Format("Test button: {0}", TestBindProperty)));
         }
 
-        private void LogMessageReceived(LogMessageReceivedEventArgs args)
+        private void LogMessageReceived(LogMessageOccuredEventArgs args)
         {
             OutputTextBoxContent += args.ToReadableLogMessage();
         }
