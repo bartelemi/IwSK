@@ -146,6 +146,11 @@ namespace RS485.Master.Serial.Implementation
             }
         }
 
+        public void closePort()
+        {
+            _serialPort.CloseConnectionAsync();
+        }
+
         private void OnLogMessageOccured(LogMessageType logMsgType, string content)
         {
             if (LogMessageOccured != null)

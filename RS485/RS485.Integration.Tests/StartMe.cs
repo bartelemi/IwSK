@@ -3,6 +3,7 @@ using RS485.Common.Model;
 using RS485.Master.Serial.Implementation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,12 +13,28 @@ namespace RS485.Integration.Tests
     class StartMe
     {
 
-        public const string portMaster = "COM6";
-        public const string portSlave = "COM7";
+        public const string portMaster = "COM0";
+        public const string portSlave = "COM1";
 
         static void Main(string[] args)
         {
             c1_standardCase.run();
+            MasterTest test = new MasterTest();
+            try
+            {
+                test.execute(spawnConnectionSettings(portMaster), spawnConnectionSettings(portSlave));
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
+            }
+            finally
+            {
+                test._slavePort.CloseConnectionAsync();
+                test._master.closePort();
+                
+            }
             Console.ReadLine();
         }
 
@@ -47,8 +64,8 @@ namespace RS485.Integration.Tests
         public static SlaveConfiguration spawnSlaveConfig(int address, String textBackToMaster)
         {
             SlaveConfiguration config = new SlaveConfiguration();
-            config.slaveAddress = address;
-            config.textSendBackToMaster = textBackToMaster;
+            config.SlaveAddress = address;
+            config.TextSendBackToMaster = textBackToMaster;
             return config;
         }
     }

@@ -21,5 +21,7 @@ namespace RS485.Common.Interfaces
         void SendFirstCommand(String slaveAddress, String message);
 
         void SendSecondCommand(String slaveAddress);
+
+        void closePort();
     }
 }

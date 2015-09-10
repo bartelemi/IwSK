@@ -14,11 +14,11 @@ namespace RS485.Integration.Tests
 
         public static void run()
         {
-            ModbusSlave slave = new ModbusSlaveImpl(StartMe.spawnConnectionSettings(StartMe.portSlave), StartMe.spawnSlaveConfig(10, "back"));
-            slave.startListening();
+            IModbusSlave slave = new ModbusSlave(StartMe.spawnConnectionSettings(StartMe.portSlave), StartMe.spawnSlaveConfig(10, "back"));
+            slave.StartListening();
 
-            ModbusMaster master = new ModbusMasterImpl(StartMe.spawnConnectionSettings(StartMe.portMaster), StartMe.spawnModbusSettings());
-            master.sendFirstCommand("20", "works motherfucker");
+            IModbusMaster master = new ModbusMaster(StartMe.spawnConnectionSettings(StartMe.portMaster), StartMe.spawnModbusSettings());
+            master.SendFirstCommand("20", "works motherfucker");
         }
     }
 }

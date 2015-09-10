@@ -49,6 +49,7 @@
     <Compile Include="Converters\EnumValueToEnumDescriptionConverter.cs" />
     <Compile Include="Converters\StringToVisibleASCIIConverter.cs" />
     <Compile Include="Exceptions\InternalErrorException.cs" />
+    <Compile Include="Exceptions\InvalidChecksumException.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\ScrollViewerExtension.cs" />
     <Compile Include="Implementation\FrameBuilder.cs" />

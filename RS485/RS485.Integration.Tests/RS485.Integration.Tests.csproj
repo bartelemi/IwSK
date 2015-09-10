@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="c1_standardCase.cs" />
+    <Compile Include="MasterTest.cs" />
+    <Compile Include="SlaveTest.cs" />
     <Compile Include="StartMe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
