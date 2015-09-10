@@ -25,7 +25,7 @@ namespace RS485.Common.Implementation
             }
             string deviceAddress = splitted[0];
             string message = splitted[1];
-            string lrc_frame = splitted[3];
+            string lrc_frame = splitted[2];
             string lrc_calculated = calculateLRC(deviceAddress + message);
             if (!lrc_frame.Equals(lrc_calculated))
             {

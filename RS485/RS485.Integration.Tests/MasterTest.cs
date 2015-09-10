@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RS485.Integration.Tests
@@ -17,18 +18,17 @@ namespace RS485.Integration.Tests
     {
         public SerialPortHandler _slavePort = new SerialPortHandler();
 
+        bool slavePortOpened = false;
+
         public IModbusMaster _master;
 
         private ConnectionSettings settingsMaster, settingsSlave;
-        public void execute(ConnectionSettings settingsMaster, ConnectionSettings settingsSlave)
+        public void prepareExecute(ConnectionSettings settingsMaster, ConnectionSettings settingsSlave)
         {
             this.settingsMaster = settingsMaster;
             this.settingsSlave = settingsSlave;
             prepareSlavePort();
             prepareMaster();
-            testStandardCaseFirstCommand();
-
-            
         }
 
         private void prepareMaster()
@@ -37,19 +37,48 @@ namespace RS485.Integration.Tests
             _master.FirstCommandCompletedHandlers += FirstCommandCompleted;
         }
 
-        private void testStandardCaseFirstCommand()
+        public void testStandardCaseFirstCommand()
         {
             _slavePort.OnDataReceived += testStandardCaseFirstCommand_slaveHandler;
-            _master.SendFirstCommand("10", "test message");
+            _master.SendFirstCommand("10", "test standard case");
         }
 
-        private void testStandardCaseFirstCommand_slaveHandler(string data, MessageType type)
+        private async void testStandardCaseFirstCommand_slaveHandler(string data, MessageType type)
         {
             Frame received = FrameBuilder.mapFromString(data);
             Debug.Assert(received.DeviceAddress.Equals("10"));
-            Debug.Assert(received.Message.Equals("text message"));
+            Debug.Assert(received.Message.Equals("test standard case"));
+            Debug.WriteLine("Slave Received: " + data);
+            await  _slavePort.SendMessageAsync(CommandResult.SUCCESS.ToString());
+            Console.WriteLine("1. standard case sucess");
+            Thread.Sleep(300);
+        }
 
-            _slavePort.SendMessageAsync("ACK");
+        private int retransmissionsCount = 0;
+
+        public void testRetransmission()
+        {
+            _slavePort.OnDataReceived += testRetransmission_slaveHandler;
+            _slavePort.OnDataReceived -= testStandardCaseFirstCommand_slaveHandler;
+            _master.SendFirstCommand("10", "test retrans");
+        }
+
+        private void testRetransmission_slaveHandler(string data, MessageType type)
+        {
+            Frame received = FrameBuilder.mapFromString(data);
+            Debug.Assert(received.DeviceAddress.Equals("10"));
+            Debug.Assert(received.Message.Equals("test retrans"));
+            Debug.WriteLine("Slave Received: " + data);
+            if (retransmissionsCount == 2)
+            {
+                _slavePort.SendMessageAsync(CommandResult.SUCCESS.ToString());
+                Console.WriteLine("2. retransmission success");
+                _slavePort.OnDataReceived -= testRetransmission_slaveHandler;
+            }
+            else
+            {
+                retransmissionsCount++;
+            }
         }
 
         public  void FirstCommandCompleted(CommandResult result){
@@ -57,12 +86,11 @@ namespace RS485.Integration.Tests
                 Debug.Assert(false);
         }
 
-        private async void prepareSlavePort()
+        private void prepareSlavePort()
         {
             try
             {
-                await _slavePort.OpenConnectionAsync(settingsSlave);
-                Debug.WriteLine("Port opened");
+                _slavePort.OpenConnectionAsync(settingsSlave);
             }
             catch (Exception e)
             {
@@ -70,6 +98,8 @@ namespace RS485.Integration.Tests
                 Debug.WriteLine(e.StackTrace);
                 throw;
             }
+            slavePortOpened = true;
+            Debug.WriteLine("Slave port opened");
         }
     }
 }

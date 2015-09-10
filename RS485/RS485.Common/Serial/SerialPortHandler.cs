@@ -41,6 +41,8 @@ namespace RS485.Common.Serial
         private SerialPort _port = new SerialPort();
         private StringBuilder _incomingMessage = new StringBuilder();
 
+        private ConnectionSettings connectionSettings;
+
         #endregion Fields
 
         #region Properties
@@ -218,6 +220,7 @@ namespace RS485.Common.Serial
         /// <param name="connectionSettings">Serial port connection settings</param>
         public Task OpenConnectionAsync(ConnectionSettings connectionSettings)
         {
+            this.connectionSettings = connectionSettings;
             return Task.Run(() =>
             {
                 if (connectionSettings != null)
@@ -246,8 +249,14 @@ namespace RS485.Common.Serial
                 try
                 {
                     if (IsOpen)
+                    {
+                        _port.DiscardOutBuffer();
+                        _port.DiscardInBuffer();
                         return;
+                    }
                     _port.Open();
+                    _port.DiscardOutBuffer();
+                    _port.DiscardInBuffer();
                 }
                 catch (Exception e)
                 {
@@ -326,8 +335,11 @@ namespace RS485.Common.Serial
                         await SendMessageAsync(settings, PingResponse);
                     }
 
-                    if(OnDataReceived != null)
-                        OnDataReceived(ReceivedData, MessageType);
+                    if (OnDataReceived != null)
+                    {
+                        var dataRecived = ReceivedData.Replace(connectionSettings.TerminalString, "");
+                        OnDataReceived(dataRecived, MessageType);
+                    }
                 }
             }
         }

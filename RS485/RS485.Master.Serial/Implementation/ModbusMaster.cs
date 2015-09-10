@@ -9,6 +9,7 @@ using System.Diagnostics;
 using RS485.Common.GuiCommon.Models;
 using RS485.Common.GuiCommon.Models.EventArgs;
 using RS485.Common.Interfaces;
+using RS485.Common.Exceptions;
 
 namespace RS485.Master.Serial.Implementation
 {
@@ -24,6 +25,7 @@ namespace RS485.Master.Serial.Implementation
         private readonly SerialPortHandler _serialPort = new SerialPortHandler();
         private Transaction _currentTransaction;
         private string _lastReceivedData = "";
+
 
         public void SetConnectionSettings(ConnectionSettings settings)
         {
@@ -43,23 +45,23 @@ namespace RS485.Master.Serial.Implementation
 
         }
 
-        public async void SendFirstCommand(string slaveAddress, string message)
+        public void SendFirstCommand(string slaveAddress, string message)
         {
-            try
-            {
-                await _serialPort.OpenConnectionAsync(_connectionSettings);
-                Debug.WriteLine("Port opened");
-            }
-            catch (Exception e)
-            {
-                OnLogMessageOccured(LogMessageType.Error, e.Message);
-                Debug.WriteLine(e.Message);
-                Debug.WriteLine(e.StackTrace);
-                return;
-            }
+                try
+                {
+                    _serialPort.OpenConnectionAsync(_connectionSettings);
+                    Debug.WriteLine("Master: Port opened");
+                }
+                catch (Exception e)
+                {
+                    OnLogMessageOccured(LogMessageType.Error, e.Message);
+                    Debug.WriteLine(e.Message);
+                    Debug.WriteLine(e.StackTrace);
+                    return;
+                }
             int retransmissionsLeft = _modbusSettings.RetransmissionsCount;
             Frame frameToSend = FrameBuilder.buildFrame(slaveAddress, message);
-            Debug.WriteLine("Frame builded: " + frameToSend);
+            Debug.WriteLine("MAster: Frame builded: " + frameToSend.getStringToSend());
             do
             {
                 _currentTransaction = new Transaction(_modbusSettings.TransactionDuration);
@@ -76,30 +78,30 @@ namespace RS485.Master.Serial.Implementation
                 }
                 while (_currentTransaction.isTransactionStillActive())
                 {
-                    Debug.WriteLine("Transaction still active, wait for receive");
+                    Debug.WriteLine("Master: Transaction still active, wait for receive");
                     if (IsFrameSendSuccess())
                     {
-                        Debug.WriteLine("Received some data: " + _lastReceivedData);
-                        if (_lastReceivedData.Equals(CommandResult.SUCCESS))
+                        Debug.WriteLine("Master: Received some data: " + _lastReceivedData);
+                        if (_lastReceivedData.Equals(CommandResult.SUCCESS.ToString()))
                         {
-                            Debug.WriteLine("Tranmission success!");
+                            Debug.WriteLine("MAster: Transmission success!");
                             SendFirstCommandCompletedEventSuccess();
                             return;
                         }
                         else
                         {
-                            Debug.WriteLine("Tranmission fail, wrong ACK!");
+                            Debug.WriteLine("Master: Transmission fail, wrong ACK!");
                             SendFirstCommandCompletedEventFail();
                             return;
                         }
                     }
                     Thread.Sleep(5);
                 }
-                Debug.WriteLine("transaction timeout, decrease retransmission");
+                Debug.WriteLine("Master: transaction timeout, decrease retransmission");
                 retransmissionsLeft--;
 
             } while (retransmissionsLeft > 0);
-            Debug.WriteLine("Communication fail, no ACK received");
+            Debug.WriteLine("Master: Communication fail, no ACK received");
             SendFirstCommandCompletedEventFail();
         }
 
@@ -115,14 +117,24 @@ namespace RS485.Master.Serial.Implementation
             FirstCommandCompletedHandlers(CommandResult.SUCCESS);
         }
 
-        private void SendFrame(Frame frameToSend)
+        private  void SendFrame(Frame frameToSend)
         {
-            _serialPort.SendMessageAsync(frameToSend.getStringToSend());
+
+            try
+            {
+                _serialPort.SendMessageAsync(frameToSend.getStringToSend());
+            }
+            catch (InternalErrorException ex)
+            {
+                _serialPort.OpenConnectionAsync(_connectionSettings);
+                _serialPort.SendMessageAsync(frameToSend.getStringToSend());
+            }
+            
         }
 
         private bool IsFrameSendSuccess()
         {
-            return !_lastReceivedData.Equals("ERROR");
+            return (!_lastReceivedData.Equals("ERROR")) & _lastReceivedData.Length > 1;
         }
 
         private void receivedDataHandler(string data, MessageType type)
@@ -138,7 +150,7 @@ namespace RS485.Master.Serial.Implementation
             }
             try
             {
-                await _serialPort.OpenConnectionAsync(_connectionSettings);
+                 _serialPort.OpenConnectionAsync(_connectionSettings);
             }
             catch (Exception e)
             {

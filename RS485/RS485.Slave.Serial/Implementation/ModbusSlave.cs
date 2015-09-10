@@ -37,11 +37,11 @@ namespace RS485.Slave.Serial.Implementation
             this.slaveConfig = config;
         }
 
-        public async void StartListening()
+        public void StartListening()
         {
             try
             {
-                await serialPort.OpenConnectionAsync(connectionSettings);
+                serialPort.OpenConnectionAsync(connectionSettings);
                 Debug.WriteLine("Port opened");
             }
             catch (Exception e)
