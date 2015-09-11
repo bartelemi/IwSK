@@ -20,6 +20,7 @@ namespace RS485.UI.ViewModel
 
             IntializeEvents();
             InitializeCommands();
+            InitSerialPortSettings();
         }
 
         private void ExecuteAction()
@@ -30,6 +31,13 @@ namespace RS485.UI.ViewModel
         private void LogMessageReceived(LogMessageOccuredEventArgs args)
         {
             OutputTextBoxContent += args.ToReadableLogMessage();
+        }
+        /// <summary>
+        /// Returns collection of serial ports names
+        /// </summary>
+        public string[] SerialPortNames
+        {
+            get { return System.IO.Ports.SerialPort.GetPortNames(); }
         }
 
         #region Dispose area

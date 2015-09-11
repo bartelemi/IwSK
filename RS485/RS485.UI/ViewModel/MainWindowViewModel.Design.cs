@@ -5,9 +5,9 @@ namespace RS485.UI.ViewModel
         /// <summary>
         /// Design-time constructor
         /// </summary>
-        public MainWindowViewModel()
-        {
+   //     public MainWindowViewModel()
+   //     {
             
-        }
+   //     }
     }
 }
