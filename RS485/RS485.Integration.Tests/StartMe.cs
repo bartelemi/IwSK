@@ -30,18 +30,10 @@ namespace RS485.Integration.Tests
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
             }
-            finally
-            {
-                test._slavePort.CloseConnectionAsync();
-                test._master.closePort();
-                
-            }
             Thread.Sleep(200);
-            MasterTest test2 = new MasterTest();
             try
             {
-                test2.prepareExecute(spawnConnectionSettings(portMaster), spawnConnectionSettings(portSlave));
-                test2.testRetransmission();
+                test.testRetransmission();
             }
             catch (Exception e)
             {

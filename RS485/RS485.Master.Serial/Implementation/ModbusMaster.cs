@@ -42,23 +42,23 @@ namespace RS485.Master.Serial.Implementation
             this._connectionSettings = connectionSettings;
             this._modbusSettings = modbusSettings;
             this._serialPort.OnDataReceived += receivedDataHandler;
+            try
+            {
+                _serialPort.OpenConnectionAsync(_connectionSettings);
+                Debug.WriteLine("Master: Port opened");
+            }
+            catch (Exception e)
+            {
+                OnLogMessageOccured(LogMessageType.Error, e.Message);
+                Debug.WriteLine(e.Message);
+                Debug.WriteLine(e.StackTrace);
+                return;
+            }
 
         }
 
         public void SendFirstCommand(string slaveAddress, string message)
         {
-                try
-                {
-                    _serialPort.OpenConnectionAsync(_connectionSettings);
-                    Debug.WriteLine("Master: Port opened");
-                }
-                catch (Exception e)
-                {
-                    OnLogMessageOccured(LogMessageType.Error, e.Message);
-                    Debug.WriteLine(e.Message);
-                    Debug.WriteLine(e.StackTrace);
-                    return;
-                }
             int retransmissionsLeft = _modbusSettings.RetransmissionsCount;
             Frame frameToSend = FrameBuilder.buildFrame(slaveAddress, message);
             Debug.WriteLine("MAster: Frame builded: " + frameToSend.getStringToSend());
@@ -126,8 +126,7 @@ namespace RS485.Master.Serial.Implementation
             }
             catch (InternalErrorException ex)
             {
-                _serialPort.OpenConnectionAsync(_connectionSettings);
-                _serialPort.SendMessageAsync(frameToSend.getStringToSend());
+                OnLogMessageOccured(LogMessageType.Error, ex.Message);
             }
             
         }
