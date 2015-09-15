@@ -1,182 +1,206 @@
 ﻿<Window x:Class="RS485.UI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:vm="clr-namespace:RS485.UI.ViewModel"
-        xmlns:model="clr-namespace:RS485.Common.Model;assembly=RS485.Common"
         xmlns:extensions="clr-namespace:RS485.Common.Extensions;assembly=RS485.Common"
-        xmlns:converter="clr-namespace:RS485.Common.Converters;assembly=RS485.Common"
-        d:DataContext="{d:DesignInstance vm:MainWindowViewModel, IsDesignTimeCreatable=True}"
-        Title="RS485" mc:Ignorable="d" Height="480.25" Width="832"
-        Icon="../Resources/icon.png">
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:model="clr-namespace:RS485.Common.Model;assembly=RS485.Common"
+        xmlns:vm="clr-namespace:RS485.UI.ViewModel"
+        Title="RS485"
+        Width="832"
+        Height="480.25"
+        Icon="../Resources/icon.png"
+        d:DataContext="{d:DesignInstance vm:MainWindowViewModel,
+                                         IsDesignTimeCreatable=True}"
+        mc:Ignorable="d">
     <Grid Margin="5">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="361*"/>
-            <ColumnDefinition Width="453*"/>
-        </Grid.ColumnDefinitions>
-        <Grid ZIndex="100" Opacity="0.6" Background="AliceBlue" Visibility="{Binding IsProcessing, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.ColumnSpan="2">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image gif:ImageBehavior.AnimatedSource="../Content/loader.gif" 
-                       gif:ImageBehavior.AutoStart="True" 
-                       gif:ImageBehavior.RepeatBehavior="Forever"  
-                       Width="60" Margin="10" />
-                <TextBlock Text="Loading..." VerticalAlignment="Center" FontSize="30" />
+        <Grid Background="AliceBlue"
+              Opacity="0.6"
+              Visibility="{Binding IsProcessing,
+                                   Converter={StaticResource BooleanToVisibilityConverter}}"
+              ZIndex="100">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                <Image Width="60"
+                       Margin="10"
+                       gif:ImageBehavior.AnimatedSource="../Content/loader.gif"
+                       gif:ImageBehavior.AutoStart="True"
+                       gif:ImageBehavior.RepeatBehavior="Forever" />
+                <TextBlock VerticalAlignment="Center"
+                           FontSize="30"
+                           Text="Loading..." />
             </StackPanel>
 
         </Grid>
-        <Grid Grid.ColumnSpan="2" Margin="0,0,0,28">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid HorizontalAlignment="Left" Height="0" Margin="0,0,0,0" VerticalAlignment="Top" Width="278"/>
-            <Grid Margin="0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="159*"/>
-                    <ColumnDefinition Width="123*"/>
-                    <ColumnDefinition Width="58*"/>
-                    <ColumnDefinition Width="474*"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel HorizontalAlignment="Left" Margin="315,0,0,67" Width="146" Grid.Column="3"/>
-            </Grid>
-            <StackPanel HorizontalAlignment="Left" Margin="10,0,0,96" Width="149" RenderTransformOrigin="0.5,0.5">
-                <Label Content="Master / Slave" Margin="0,0,0,0" Height="26"/>
-                <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:MasterSlave}}}"
-                    	DisplayMemberPath="Description"
-                    	SelectedValue="{Binding MasterSlave}"
-                    	SelectedIndex="0" 
-                    	SelectedValuePath="Value" Margin="0,0,0,0" />
-            </StackPanel>
-            <TabControl HorizontalAlignment="Left" Margin="0,59,0,0" Width="804">
-                <TabItem Header="Master" Margin="-2,0,-2,-1" Height="20" VerticalAlignment="Bottom">
-                    <Grid Background="Cornsilk" Margin="0,0,0,8">
-                        <StackPanel HorizontalAlignment="Left" Margin="10,0,0,0 " Width="149" RenderTransformOrigin="0.5,0.5">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0
-                                "/>
-                            <Label Content="Port" Margin="0,0,0,0"/>
-                            <ComboBox ItemsSource="{Binding SerialPortNames}"
-                    	SelectedValue="{Binding SelectedPortName}" Margin="0,0,0,0"/>
-                            <Label Content="Tryb transakcji" Height="26"/>
-                            <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:TransactionType}}}"
-                    	DisplayMemberPath="Description"
-                    	SelectedValuePath="Value"
-                    	SelectedIndex="0"
-                    	SelectedValue="{Binding TransactionType}"
-                                           Margin="0,0,0,0"
-                                           />
-                            <Label Content="Rozkaz" Margin="0,0,0,0" Height="26"/>
-                            <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:CommandMode}}}"
-                    	DisplayMemberPath="Description"
-                    	SelectedValue="{Binding CommandMode}"
-                    	SelectedIndex="0" 
-                    	IsEnabled="{Binding TransactionType, ConverterParameter=Broadcast, Converter={StaticResource EnumToBool}}"
-                    	SelectedValuePath="Value" Margin="0,0,0,0"/>
-                            <Button Height="30" Padding="0" Margin="0,10,0,0"
-                                    Command="{Binding ExecuteCommand}"
-                                    IsEnabled="{Binding ConnectionState, ConverterParameter=Connected, Converter={StaticResource EnumToBool}}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="../Resources/ping.png"/>
-                                    <Label Content="Wykonaj rozkaz"/>
+            <TabControl Grid.Row="0">
+                <TabItem Header="Master">
+                    <Grid Background="Cornsilk">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox Margin="5"
+                                  Header="Ustawienia"
+                                  IsEnabled="{Binding ModbusMaster,
+                                                      Converter={StaticResource NullToBooleanConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="Port" />
+                                <ComboBox Margin="0 0 0 5"
+                                          ItemsSource="{Binding SerialPortNames}"
+                                          SelectedValue="{Binding SelectedPortName}" />
+                                <TextBlock Text="Timeout transmisji" />
+                                <TextBox Margin="0 0 0 5"
+                                         PreviewTextInput="Textbox_OnPreviewTextInput"
+                                         Text="{Binding TimeoutTransmission}" />
+                                <TextBlock Text="Timeout retransmisji" />
+                                <TextBox Margin="0 0 0 5"
+                                         PreviewTextInput="Textbox_OnPreviewTextInput"
+                                         Text="{Binding TimeoutRetransmission}" />
+                                <TextBlock Text="Liczba retransmisji" />
+                                <TextBox PreviewTextInput="Textbox_OnPreviewTextInput" Text="{Binding NumberOfRetransmission}" />
+                                <Button Margin="20"
+                                        Command="{Binding ConnectToModbusCommand}"
+                                        CommandParameter="{x:Static model:MasterSlave.Master}"
+                                        Content="Podłącz jako master"
+                                        Padding="5" />
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Grid.Column="1"
+                                  Margin="5"
+                                  Header="Wykonanie rozkazu">
+                            <StackPanel>
+                                <TextBlock Text="Tryb transakcji" />
+                                <ComboBox Margin="0 0 0 5"
+                                          DisplayMemberPath="Description"
+                                          ItemsSource="{Binding Source={extensions:Enum {x:Type model:TransactionType}}}"
+                                          SelectedIndex="0"
+                                          SelectedValue="{Binding TransactionType}"
+                                          SelectedValuePath="Value" />
+                                <TextBlock Text="Rozkaz" />
+                                <ComboBox Margin="0 0 0 5"
+                                          DisplayMemberPath="Description"
+                                          IsEnabled="{Binding TransactionType,
+                                                              ConverterParameter={x:Static model:TransactionType.Address},
+                                                              Converter={StaticResource EnumToBooleanConverter}}"
+                                          ItemsSource="{Binding Source={extensions:Enum {x:Type model:CommandMode}}}"
+                                          SelectedIndex="0"
+                                          SelectedValue="{Binding CommandMode}"
+                                          SelectedValuePath="Value" />
+                                <StackPanel>
+                                    <StackPanel Visibility="{Binding TransactionType, ConverterParameter={x:Static model:TransactionType.Address}, Converter={StaticResource EnumToVisibilityConverter}}">
+                                        <TextBlock Text="Adres docelowej stacji slave (trans. adresowana)" />
+                                        <TextBox Margin="0 0 0 5"
+                                                 PreviewTextInput="Textbox_OnPreviewTextInput"
+                                                 Text="{Binding SlaveStationAddress}" />
+                                    </StackPanel>
+                                    <StackPanel Margin="0 0 0 5" Visibility="{Binding CommandMode, ConverterParameter={x:Static model:CommandMode.One}, Converter={StaticResource EnumToVisibilityConverter}}">
+                                        <TextBlock Text="Argumenty zapytania (rozkaz 1)" />
+                                        <TextBox Text="{Binding CommandOneArguments}" />
+                                    </StackPanel>
+                                    <StackPanel Margin="0 0 0 5" Visibility="{Binding CommandMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static model:CommandMode.Two}}">
+                                        <TextBlock Text="Otrzymana odpowiedź (rozkaz 2)" />
+                                        <TextBox IsReadOnly="True"
+                                                 Text="{Binding OutputMaster}"
+                                                 VerticalScrollBarVisibility="Auto" />
+                                    </StackPanel>
                                 </StackPanel>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel HorizontalAlignment="Left" Margin="164,0,0,75" Width="472">
-                            <Label Content="Argumenty" Margin="10,0" Height="26"/>
-                            <TextBox Text="{Binding CommandOneArguments}" 
-                                     IsEnabled="{Binding CommandMode, ConverterParameter=One, Converter={StaticResource EnumToBool}}"
-                                Margin="10,0"/>
-                            <GroupBox Header="Informacje o transmisji" Padding="3" Margin="10,0" Height="64">
-                                <TextBox IsReadOnly="True" Text="{Binding TransmissionInfoOutput}" TextChanged="OnOnTransmissionInfoTextBoxTextChanged" 
-                    		VerticalScrollBarVisibility="Auto" x:Name="TransmissionInfoTextBox" />
-                            </GroupBox>
-                            <GroupBox Header="Output" Padding="3" Margin="10,0" Height="83">
-                                <TextBox IsReadOnly="True" Text="{Binding OutputMaster}" TextChanged="OnOutputMasterTextChanged" 
-                    		VerticalScrollBarVisibility="Auto" x:Name="OutputMaster" Margin="0,0,0,-2" />
-                            </GroupBox>
-                        </StackPanel>
-                        <StackPanel HorizontalAlignment="Left" Margin="641,0,0,96" Width="143">
-                            <Label Content="Adres stacji Slave" Height="26"/>
-                            <TextBox Text="{Binding SlaveStationAddress}" PreviewTextInput="Textbox_OnPreviewTextInput"
-                                     IsEnabled="{Binding TransactionType, ConverterParameter=Address, Converter={StaticResource EnumToBool}}"/>
-                            <Label Content="Timeout transmisji"/>
-                            <TextBox Text="{Binding TimeoutTransmission}" PreviewTextInput="Textbox_OnPreviewTextInput"/>
-                            <Label Content="Timeout retransmisji"/>
-                            <TextBox Text="{Binding TimeoutRetransmission}" PreviewTextInput="Textbox_OnPreviewTextInput"/>
-                            <Label Content="Liczba retransmisji"/>
-                            <TextBox Text="{Binding NumberOfRetransmission}" PreviewTextInput="Textbox_OnPreviewTextInput"/>
-                        </StackPanel>
-                        <GroupBox Header="Błędy" Padding="3" Margin="0,213,0,0">
-                            <TextBox IsReadOnly="True" Text="{Binding ErrorOutputMaster}" TextChanged="OnErrorTextBoxMasterTextChanged" 
-                		VerticalScrollBarVisibility="Auto" x:Name="ErrorTextBox" HorizontalAlignment="Right" Width="776" Margin="0,0,0,2" />
+                                <Button Margin="0 5"
+                                        Command="{Binding ExecuteModbusRequestCommand}"
+                                        IsEnabled="{Binding ConnectionState,
+                                                            ConverterParameter=Connected,
+                                                            Converter={StaticResource EnumToBooleanConverter}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="../Resources/ping.png" />
+                                        <TextBlock VerticalAlignment="Center" Text="Wykonaj rozkaz" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
                         </GroupBox>
                     </Grid>
-
                 </TabItem>
-                <TabItem Header="Slave" HorizontalAlignment="Left" Width="100">
-                    <Grid Background="Cornsilk" Margin="0,0,0,8">
-                        <StackPanel HorizontalAlignment="Left" Margin="10,0,0,96" Width="149" RenderTransformOrigin="0.5,0.5">
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0
-                                "/>
-                            <Label Content="Port" Margin="0,0,0,0"/>
-                            <ComboBox ItemsSource="{Binding SerialPortNames}"
-                    	SelectedValue="{Binding SelectedPortName}" Margin="0,0,0,0"/>
-                            <Label Content="Tryb transakcji" Height="26"/>
-                            <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:TransactionType}}}"
-                    	DisplayMemberPath="Description"
-                    	SelectedValuePath="Value"
-                    	SelectedIndex="0"
-                    	SelectedValue="{Binding TransactionType}"
-                                           Margin="0,0,0,0"
-                                           />
-                            <Label Content="Rozkaz" Margin="0,0,0,0" Height="26"/>
-                            <ComboBox ItemsSource="{Binding Source={extensions:Enum {x:Type model:CommandMode}}}"
-                    	DisplayMemberPath="Description"
-                    	SelectedValue="{Binding CommandMode}"
-                    	SelectedIndex="0" 
-                    	IsEnabled="{Binding TransactionType, ConverterParameter=Broadcast, Converter={StaticResource EnumToBool}}"
-                    	SelectedValuePath="Value" Margin="0,0,0,0"/>
-                            <Button Height="50" Padding="0" Margin="5"
-                                    Command="{Binding ListenCommand}"
-                                    IsEnabled="{Binding ConnectionState, Converter={StaticResource EnumToBool}, ConverterParameter=Connected}">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="../Resources/ping.png"/>
-                                        <Label Content="Rozpocznij &#xD;&#xA;nasłuch&#xD;&#xA;"/>
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel HorizontalAlignment="Left" Margin="164,0,0,96" Width="472">
-                            <GroupBox Header="Input dla rozkazu 1" Padding="3" Margin="10,0" Height="95">
-                                <TextBox IsReadOnly="False" Text="{Binding InputTextBoxContent}" TextWrapping="Wrap"
-                    		VerticalScrollBarVisibility="Auto" x:Name="InputSlave" />
-                            </GroupBox>
-                            <GroupBox Header="Output dla rozkazu 1" Padding="3" Margin="10,0" Height="95">
-                                <TextBox IsReadOnly="True" Text="{Binding OutputTextBoxContent}" TextChanged="OnOutputSlaveTextChanged" TextWrapping="Wrap"
-                    		VerticalScrollBarVisibility="Auto" x:Name="OutputSlave" />
-                            </GroupBox>
-                        </StackPanel>
-                        <StackPanel HorizontalAlignment="Left" Margin="641,0,0,96" Width="143">
-                            <Label Content="Adres stacji Slave" Height="26"/>
-                            <TextBox Text="{Binding SlaveStationAddress}" PreviewTextInput="Textbox_OnPreviewTextInput"/>
-                            <Label Content="Timeout transmisji"/>
-                            <TextBox Text="{Binding TimeoutTransmission}" PreviewTextInput="Textbox_OnPreviewTextInput"/>
-                        </StackPanel>
-                        <GroupBox Header="Błędy" Padding="3" Margin="0,213,0,0">
-                            <TextBox IsReadOnly="True" Text="{Binding OutputTextBoxContent}" TextChanged="OnErrorTextBoxSlaveTextChanged" 
-                		VerticalScrollBarVisibility="Auto" x:Name="ErrorTextBoxSlave" />
+                <TabItem Header="Slave">
+                    <Grid Background="Cornsilk">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <GroupBox Grid.Column="0"
+                                  Margin="5"
+                                  Header="Ustawienia"
+                                  IsEnabled="{Binding ModbusSlave,
+                                                      Converter={StaticResource NullToBooleanConverter}}">
+                            <StackPanel>
+                                <TextBlock Text="Port" />
+                                <ComboBox Margin="0 0 0 5"
+                                          ItemsSource="{Binding SerialPortNames}"
+                                          SelectedValue="{Binding SelectedPortName}" />
+                                <TextBlock Text="Adres stacji Slave" />
+                                <TextBox Margin="0 0 0 5"
+                                         PreviewTextInput="Textbox_OnPreviewTextInput"
+                                         Text="{Binding SlaveStationAddress}" />
+                                <TextBlock Text="Timeout transmisji" />
+                                <TextBox PreviewTextInput="Textbox_OnPreviewTextInput" Text="{Binding TimeoutTransmission}" />
+                                <Button Margin="20"
+                                        Command="{Binding ConnectToModbusCommand}"
+                                        CommandParameter="{x:Static model:MasterSlave.Slave}"
+                                        Content="Podłącz jako slave"
+                                        Padding="5" />
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Grid.Column="1"
+                                  Margin="5"
+                                  Header="Konfiguracja nasłuchu">
+                            <StackPanel>
+                                <StackPanel Margin="0 0 0 5">
+                                    <TextBlock Text="Argumenty odpowiedzi (rozkaz 2)" />
+                                    <TextBox IsReadOnly="False"
+                                             Text="{Binding InputSlave}"
+                                             TextWrapping="Wrap"
+                                             VerticalScrollBarVisibility="Auto" />
+                                </StackPanel>
+                                <StackPanel Margin="0 0 0 5">
+                                    <TextBlock Text="Otrzymane dane (rozkaz 1)" />
+                                    <TextBox IsReadOnly="True"
+                                             Text="{Binding OutputSlave}"
+                                             TextWrapping="Wrap"
+                                             VerticalScrollBarVisibility="Auto" />
+                                </StackPanel>
+                                <Button Margin="0 5"
+                                        Command="{Binding StartSlaveListenerCommand}"
+                                        IsEnabled="{Binding ConnectionState,
+                                                            Converter={StaticResource EnumToBooleanConverter},
+                                                            ConverterParameter=Connected}">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="../Resources/ping.png" />
+                                            <TextBlock VerticalAlignment="Center" Text="Rozpocznij&#10;nasłuch" />
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
                         </GroupBox>
                     </Grid>
                 </TabItem>
             </TabControl>
+            <GroupBox Grid.Row="1"
+                      Height="150"
+                      Header="Logs"
+                      Padding="3">
+                <TextBox x:Name="OutputTextBox"
+                         IsReadOnly="True"
+                         Text="{Binding OutputTextBoxContent}"
+                         TextChanged="OutputTextBox_OnTextChanged"
+                         VerticalScrollBarVisibility="Auto" />
+            </GroupBox>
         </Grid>
-        <StatusBar Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="23">
-            <StatusBarItem Content="{Binding StatusText}" DockPanel.Dock="Right"
-                           Visibility="{Binding ConnectionState, Converter={StaticResource EnumToVisibility}, ConverterParameter=Error}"/>
-            <StatusBarItem Content="Status: "/>
-            <StatusBarItem Content="{Binding ConnectionState, Converter={StaticResource EnumValueToEnumDescription}}"/>
-        </StatusBar>
-        <StackPanel Grid.Column="2" HorizontalAlignment="Left" Height="100" Margin="261,465,-211,0" VerticalAlignment="Top" Width="100"/>
     </Grid>
 </Window>

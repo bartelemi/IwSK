@@ -1,40 +1,19 @@
 using RS485.Common.Model;
-using RS485.Common.Converters;
-using RS485.UI.Helpers;
-using RS485.Common.Extensions;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Text;
-using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-
-using GalaSoft.MvvmLight;
+using RS485.UI.Helpers;
 
 namespace RS485.UI.ViewModel
 {
     public partial class MainWindowViewModel
     {
-        public MainWindowViewModel()
-        {
-            InitSerialPortSettings();
-            // InitCommands();
-
-            //  _serialPortHandler.OnDataReceived += new SerialPortHandler.DataReceived(SerialPortDataReceived);
-        }
-
-        public void InitSerialPortSettings()
+        private void InitSerialPortSettings()
         {
             _commandMode = CommandMode.One;
-            _masterSlave = MasterSlave.Master;
             _transactionType = TransactionType.Broadcast;
             _slaveStationAddress = 123;
             _timeoutRetransmission = 500;
             _timeoutTransmission = 500;
             _numberOfRetransmission = 2;
-
         }
 
         public bool IsProcessing
@@ -59,17 +38,6 @@ namespace RS485.UI.ViewModel
         }
         private object _outputTextBoxContent;
 
-        public string TestBindProperty
-        {
-            get { return _testBindProperty; }
-            set
-            {
-                _testBindProperty = value;
-                OnPropertyChanged();
-            }
-        }
-        private string _testBindProperty;
-
          public string CommandOneArguments
         {
             get { return _commandOneArguments; }
@@ -81,7 +49,6 @@ namespace RS485.UI.ViewModel
             }
         }
         private string _commandOneArguments;
-
 
         public string InputSlave
         {
@@ -95,24 +62,6 @@ namespace RS485.UI.ViewModel
         }
         private string _inputSlave;
 
-
-        /// <summary>
-        /// Number of port for connection
-        /// </summary>
-        public int PortNumber
-        {
-            get { return _portNumber; }
-            set
-            {
-                _portNumber = value;
-                OnPropertyChanged();
-            }
-        }
-        private int _portNumber;
-
-        /// <summary>
-        /// Holds name of selected serial port
-        /// </summary>
         public string SelectedPortName
         {
             get { return _selectedPortName; }
@@ -124,10 +73,6 @@ namespace RS485.UI.ViewModel
         }
         private string _selectedPortName;
 
-
-        /// <summary>
-        /// Current state of connection
-        /// </summary>
         public ConnectionState ConnectionState
         {
             get { return _connectionState; }
@@ -139,20 +84,6 @@ namespace RS485.UI.ViewModel
         }
         private ConnectionState _connectionState;
 
-        /// <summary>
-        /// Master or Slave mode
-        /// </summary>
-        public MasterSlave MasterSlave
-        {
-            get { return _masterSlave; }
-            set
-            {
-                _masterSlave = value;
-                OnPropertyChanged();
-            }
-        }
-        private MasterSlave _masterSlave;
-
         public TransactionType TransactionType
         {
             get { return _transactionType; }
@@ -160,6 +91,11 @@ namespace RS485.UI.ViewModel
             {
                 _transactionType = value;
                 OnPropertyChanged();
+
+                if (value != TransactionType.Address)
+                {
+                    CommandMode = CommandMode.One;
+                }
             }
         }
         private TransactionType _transactionType;
@@ -224,74 +160,25 @@ namespace RS485.UI.ViewModel
         /// </summary>
         public string OutputMaster
         {
-            get { return _outputMaster.ToString(); }
+            get { return _outputMaster; }
             set
             {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    _outputMaster.Append(value);
-                    OnPropertyChanged();
-                }
+                _outputMaster = value;
+                OnPropertyChanged();
             }
         }
-        private StringBuilder _outputMaster = new StringBuilder();
+        private string _outputMaster;
 
         public string OutputSlave
         {
-            get { return _outputSlave.ToString(); }
+            get { return _outputSlave; }
             set
             {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    _outputSlave.Append(value);
-                    OnPropertyChanged();
-                }
+                _outputSlave = value;
+                OnPropertyChanged();
             }
         }
-        private StringBuilder _outputSlave = new StringBuilder();
-
-        public string TransmissionInfoOutput
-        {
-            get { return _transmissionInfoOutput.ToString(); }
-            set
-            {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    _transmissionInfoOutput.Append(value);
-                    OnPropertyChanged();
-                }
-            }
-        }
-        private StringBuilder _transmissionInfoOutput = new StringBuilder();
-
-        public string ErrorOutputMaster
-        {
-            get { return _errorOutputMaster.ToString(); }
-            set
-            {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    _errorOutputMaster.Append(value);
-                    OnPropertyChanged();
-                }
-            }
-        }
-        private StringBuilder _errorOutputMaster = new StringBuilder();
-
-        public string ErrorOutputSlave
-        {
-            get { return _errorOutputSlave.ToString(); }
-            set
-            {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    _errorOutputSlave.Append(value);
-                    OnPropertyChanged();
-                }
-            }
-        }
-        private StringBuilder _errorOutputSlave = new StringBuilder();
-
+        private string _outputSlave;
     }
     
 }

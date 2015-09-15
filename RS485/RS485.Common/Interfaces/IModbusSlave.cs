@@ -4,9 +4,10 @@ using RS485.Common.Model;
 
 namespace RS485.Common.Interfaces
 {
-    public delegate void ReceivedMessageFromMasterInFirstCommand(String messageReceived);
+    public delegate void ReceivedMessageFromMasterInFirstCommand(string messageReceived);
     public delegate void SentTextToMasterInSecondCommand();
-    public interface IModbusSlave
+
+    public interface IModbusSlave : IDisposable
     {
         event ReceivedMessageFromMasterInFirstCommand FirstCommandReceived;
         event SentTextToMasterInSecondCommand SecondCommandResponseSent;

@@ -1,29 +1,24 @@
 ﻿using RS485.Common.Interfaces;
 using RS485.Common.Model;
-using RS485.Master.Serial.Implementation;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace RS485.Integration.Tests
 {
-    class StartMe
+    static class StartMe
     {
 
-        public const string portMaster = "COM4";
-        public const string portSlave = "COM5";
+        public const string PortMaster = "COM4";
+        public const string PortSlave = "COM5";
 
         static void Main(string[] args)
         {
             MasterTest test = new MasterTest();
             try
             {
-                test.prepareExecute(spawnConnectionSettings(portMaster), spawnConnectionSettings(portSlave));
-                test.testStandardCaseFirstCommand();
+                test.PrepareExecute(SpawnConnectionSettings(PortMaster), SpawnConnectionSettings(PortSlave));
+                test.TestStandardCaseFirstCommand();
             }
             catch (Exception e)
             {
@@ -33,7 +28,7 @@ namespace RS485.Integration.Tests
             Thread.Sleep(200);
             try
             {
-                test.testRetransmission();
+                test.TestRetransmission();
             }
             catch (Exception e)
             {
@@ -42,41 +37,50 @@ namespace RS485.Integration.Tests
             }
             finally
             {
-                test._slavePort.CloseConnectionAsync();
-                test._master.closePort();
+                test.SlavePort.CloseConnectionAsync();
+                test.Master.Dispose();
 
             }
             Console.ReadLine();
         }
 
-        public static ConnectionSettings spawnConnectionSettings(string portName)
+        public static ConnectionSettings SpawnConnectionSettings(string portName)
         {
-             ConnectionSettings settings = new ConnectionSettings();
-             settings.BitRate = BitRate.BR_9600;
-            settings.CharacterFormat = new CharacterFormat();
-            settings.CharacterFormat.DataFieldSize = 8;
-            settings.CharacterFormat.ParityControl = ParityControl.Even;
-            settings.CharacterFormat.StopBitsNumber = StopBitsNumber.One;
-            settings.FlowControl = FlowControl.Manual;
-            settings.PortName = portName;
-            settings.ReadTimeout = 500;
-            settings.WriteTimeout = 5000;
-            settings.TerminalString = "###";
+            ConnectionSettings settings = new ConnectionSettings
+            {
+                BitRate = BitRate.BR_9600,
+                CharacterFormat = new CharacterFormat
+                {
+                    DataFieldSize = 8,
+                    ParityControl = ParityControl.Even,
+                    StopBitsNumber = StopBitsNumber.One
+                },
+                FlowControl = FlowControl.Manual,
+                PortName = portName,
+                ReadTimeout = 500,
+                WriteTimeout = 5000,
+                TerminalString = "###"
+            };
             return settings;
         }
 
-        public static ModbusSettings spawnModbusSettings() {
-             ModbusSettings modbus = new ModbusSettings();
-             modbus.RetransmissionsCount = 5;
-             modbus.TransactionDuration = 600;
-             return modbus;
+        public static ModbusSettings SpawnModbusSettings() 
+        {
+            ModbusSettings modbus = new ModbusSettings
+            {
+                RetransmissionsCount = 5,
+                TransactionDuration = 600
+            };
+            return modbus;
         }
 
-        public static SlaveConfiguration spawnSlaveConfig(int address, String textBackToMaster)
+        public static SlaveConfiguration SpawnSlaveConfig(int address, String textBackToMaster)
         {
-            SlaveConfiguration config = new SlaveConfiguration();
-            config.SlaveAddress = address;
-            config.TextSendBackToMaster = textBackToMaster;
+            SlaveConfiguration config = new SlaveConfiguration
+            {
+                SlaveAddress = address,
+                TextSendBackToMaster = textBackToMaster
+            };
             return config;
         }
     }

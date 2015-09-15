@@ -4,43 +4,39 @@ using RS485.Common.Model;
 using RS485.Common.Serial;
 using RS485.Master.Serial.Implementation;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace RS485.Integration.Tests
 {
 
     class MasterTest
     {
-        public SerialPortHandler _slavePort = new SerialPortHandler();
+        public readonly SerialPortHandler SlavePort = new SerialPortHandler();
 
-        bool slavePortOpened = false;
+        bool _slavePortOpened = false;
 
-        public IModbusMaster _master;
+        public IModbusMaster Master;
 
-        private ConnectionSettings settingsMaster, settingsSlave;
-        public void prepareExecute(ConnectionSettings settingsMaster, ConnectionSettings settingsSlave)
+        private ConnectionSettings _settingsMaster, _settingsSlave;
+        public void PrepareExecute(ConnectionSettings settingsMaster, ConnectionSettings settingsSlave)
         {
-            this.settingsMaster = settingsMaster;
-            this.settingsSlave = settingsSlave;
-            prepareSlavePort();
-            prepareMaster();
+            _settingsMaster = settingsMaster;
+            _settingsSlave = settingsSlave;
+            PrepareSlavePort();
+            PrepareMaster();
         }
 
-        private void prepareMaster()
+        private void PrepareMaster()
         {
-            _master = new ModbusMaster( settingsMaster, StartMe.spawnModbusSettings());
-            _master.FirstCommandCompletedHandlers += FirstCommandCompleted;
+            Master = new ModbusMaster(_settingsMaster, StartMe.SpawnModbusSettings());
+            Master.FirstCommandCompleted += FirstCommandCompleted;
         }
 
-        public void testStandardCaseFirstCommand()
+        public void TestStandardCaseFirstCommand()
         {
-            _slavePort.OnDataReceived += testStandardCaseFirstCommand_slaveHandler;
-            _master.SendFirstCommand("10", "test standard case");
+            SlavePort.OnDataReceived += testStandardCaseFirstCommand_slaveHandler;
+            Master.SendFirstCommand("10", "test standard case");
         }
 
         private async void testStandardCaseFirstCommand_slaveHandler(string data, MessageType type)
@@ -49,18 +45,18 @@ namespace RS485.Integration.Tests
             Debug.Assert(received.DeviceAddress.Equals("10"));
             Debug.Assert(received.Message.Equals("test standard case"));
             Debug.WriteLine("Slave Received: " + data);
-            await  _slavePort.SendMessageAsync(CommandResult.SUCCESS.ToString());
+            await  SlavePort.SendMessageAsync(CommandResult.Success.ToString());
             Console.WriteLine("1. standard case sucess");
             Thread.Sleep(300);
         }
 
-        private int retransmissionsCount = 0;
+        private int _retransmissionsCount = 0;
 
-        public void testRetransmission()
+        public void TestRetransmission()
         {
-            _slavePort.OnDataReceived += testRetransmission_slaveHandler;
-            _slavePort.OnDataReceived -= testStandardCaseFirstCommand_slaveHandler;
-            _master.SendFirstCommand("10", "test retrans");
+            SlavePort.OnDataReceived += testRetransmission_slaveHandler;
+            SlavePort.OnDataReceived -= testStandardCaseFirstCommand_slaveHandler;
+            Master.SendFirstCommand("10", "test retrans");
         }
 
         private void testRetransmission_slaveHandler(string data, MessageType type)
@@ -69,28 +65,28 @@ namespace RS485.Integration.Tests
             Debug.Assert(received.DeviceAddress.Equals("10"));
             Debug.Assert(received.Message.Equals("test retrans"));
             Debug.WriteLine("Slave Received: " + data);
-            if (retransmissionsCount == 2)
+            if (_retransmissionsCount == 2)
             {
-                _slavePort.SendMessageAsync(CommandResult.SUCCESS.ToString());
+                SlavePort.SendMessageAsync(CommandResult.Success.ToString());
                 Console.WriteLine("2. retransmission success");
-                _slavePort.OnDataReceived -= testRetransmission_slaveHandler;
+                SlavePort.OnDataReceived -= testRetransmission_slaveHandler;
             }
             else
             {
-                retransmissionsCount++;
+                _retransmissionsCount++;
             }
         }
 
-        public  void FirstCommandCompleted(CommandResult result){
-            if(result == CommandResult.FAIL)
+        public void FirstCommandCompleted(CommandResult result){
+            if(result == CommandResult.Fail)
                 Debug.Assert(false);
         }
 
-        private void prepareSlavePort()
+        private void PrepareSlavePort()
         {
             try
             {
-                _slavePort.OpenConnectionAsync(settingsSlave);
+                SlavePort.OpenConnectionAsync(_settingsSlave);
             }
             catch (Exception e)
             {
@@ -98,7 +94,7 @@ namespace RS485.Integration.Tests
                 Debug.WriteLine(e.StackTrace);
                 throw;
             }
-            slavePortOpened = true;
+            _slavePortOpened = true;
             Debug.WriteLine("Slave port opened");
         }
     }

@@ -4,6 +4,5 @@
     {
         public int RetransmissionsCount { get; set; }
         public int TransactionDuration { get; set; }
-
     }
 }

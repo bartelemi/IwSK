@@ -61,7 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="c1_standardCase.cs" />
+    <Compile Include="C1StandardCase.cs" />
     <Compile Include="MasterTest.cs" />
     <Compile Include="SlaveTest.cs" />
     <Compile Include="StartMe.cs" />

@@ -1,5 +1,5 @@
-﻿using RS485.Common.Interfaces;
-using System;
+﻿using System;
+using RS485.Common.Interfaces;
 using RS485.Common.GuiCommon.Models;
 using RS485.Common.GuiCommon.Models.EventArgs;
 using RS485.Common.Model;
@@ -14,34 +14,32 @@ namespace RS485.Slave.Serial.Implementation
         public event SentTextToMasterInSecondCommand SecondCommandResponseSent;
         public event LogMessageOccuredEventHandler LogMessageOccured;
 
-        private SlaveConfiguration slaveConfig;
-
-        private ConnectionSettings connectionSettings;
-
-        private SerialPortHandler serialPort = new SerialPortHandler();
+        private SlaveConfiguration _slaveConfig;
+        private ConnectionSettings _connectionSettings;
+        private readonly SerialPortHandler _serialPort = new SerialPortHandler();
 
         public ModbusSlave(ConnectionSettings settings, SlaveConfiguration config)
         {
-            this.connectionSettings = settings;
-            this.slaveConfig = config;
-            serialPort.OnDataReceived += serialDataReceived;
+            _connectionSettings = settings;
+            _slaveConfig = config;
+            _serialPort.OnDataReceived += SerialDataReceived;
         }
 
         public void SetConnectionSettings(ConnectionSettings settings)
         {
-             this.connectionSettings = settings;
+             _connectionSettings = settings;
         }
 
         public void SetSlaveConfiguration(SlaveConfiguration config)
         {
-            this.slaveConfig = config;
+            _slaveConfig = config;
         }
 
         public void StartListening()
         {
             try
             {
-                serialPort.OpenConnectionAsync(connectionSettings);
+                _serialPort.OpenConnectionAsync(_connectionSettings);
                 Debug.WriteLine("Port opened");
             }
             catch (Exception e)
@@ -49,7 +47,6 @@ namespace RS485.Slave.Serial.Implementation
                 OnLogMessageOccured(LogMessageType.Error, e.Message);
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
-                return;
             }
         }
 
@@ -61,9 +58,14 @@ namespace RS485.Slave.Serial.Implementation
 
 
 
-        public void serialDataReceived(string data, MessageType type)
+        public void SerialDataReceived(string data, MessageType type)
         {
             Debug.WriteLine("Slave received: " + data);
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }

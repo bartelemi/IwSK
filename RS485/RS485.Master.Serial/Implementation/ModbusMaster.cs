@@ -15,13 +15,12 @@ namespace RS485.Master.Serial.Implementation
 {
     public class ModbusMaster : IModbusMaster
     {
-        public event FirstCommandCompleted FirstCommandCompletedHandlers;
-        public event SecondCommandCompleted SecondCommandCompletedHandlers;
+        public event FirstCommandCompletedEventHandler FirstCommandCompleted;
+        public event SecondCommandCompletedEventHandler SecondCommandCompleted;
         public event LogMessageOccuredEventHandler LogMessageOccured;
 
         private ModbusSettings _modbusSettings;
         private ConnectionSettings _connectionSettings;
-        private MessageProperties _messageProperties;
         private readonly SerialPortHandler _serialPort = new SerialPortHandler();
         private Transaction _currentTransaction;
         private string _lastReceivedData = "";
@@ -29,19 +28,19 @@ namespace RS485.Master.Serial.Implementation
 
         public void SetConnectionSettings(ConnectionSettings settings)
         {
-            this._connectionSettings = settings;
+            _connectionSettings = settings;
         }
 
         public void SetModbusSettings(ModbusSettings settings)
         {
-            this._modbusSettings = settings;
+            _modbusSettings = settings;
         }
 
         public ModbusMaster(ConnectionSettings connectionSettings, ModbusSettings modbusSettings)
         {
-            this._connectionSettings = connectionSettings;
-            this._modbusSettings = modbusSettings;
-            this._serialPort.OnDataReceived += receivedDataHandler;
+            _connectionSettings = connectionSettings;
+            _modbusSettings = modbusSettings;
+            _serialPort.OnDataReceived += receivedDataHandler;
             try
             {
                 _serialPort.OpenConnectionAsync(_connectionSettings);
@@ -52,7 +51,6 @@ namespace RS485.Master.Serial.Implementation
                 OnLogMessageOccured(LogMessageType.Error, e.Message);
                 Debug.WriteLine(e.Message);
                 Debug.WriteLine(e.StackTrace);
-                return;
             }
 
         }
@@ -62,6 +60,7 @@ namespace RS485.Master.Serial.Implementation
             int retransmissionsLeft = _modbusSettings.RetransmissionsCount;
             Frame frameToSend = FrameBuilder.buildFrame(slaveAddress, message);
             Debug.WriteLine("MAster: Frame builded: " + frameToSend.getStringToSend());
+
             do
             {
                 _currentTransaction = new Transaction(_modbusSettings.TransactionDuration);
@@ -82,18 +81,16 @@ namespace RS485.Master.Serial.Implementation
                     if (IsFrameSendSuccess())
                     {
                         Debug.WriteLine("Master: Received some data: " + _lastReceivedData);
-                        if (_lastReceivedData.Equals(CommandResult.SUCCESS.ToString()))
+                        if (_lastReceivedData.Equals(CommandResult.Success.ToString()))
                         {
                             Debug.WriteLine("MAster: Transmission success!");
                             SendFirstCommandCompletedEventSuccess();
                             return;
                         }
-                        else
-                        {
-                            Debug.WriteLine("Master: Transmission fail, wrong ACK!");
-                            SendFirstCommandCompletedEventFail();
-                            return;
-                        }
+
+                        Debug.WriteLine("Master: Transmission fail, wrong ACK!");
+                        SendFirstCommandCompletedEventFail();
+                        return;
                     }
                     Thread.Sleep(5);
                 }
@@ -101,6 +98,7 @@ namespace RS485.Master.Serial.Implementation
                 retransmissionsLeft--;
 
             } while (retransmissionsLeft > 0);
+
             Debug.WriteLine("Master: Communication fail, no ACK received");
             SendFirstCommandCompletedEventFail();
         }
@@ -108,13 +106,13 @@ namespace RS485.Master.Serial.Implementation
         private void SendFirstCommandCompletedEventFail()
         {
             _lastReceivedData = "";
-            FirstCommandCompletedHandlers(CommandResult.FAIL);
+            FirstCommandCompleted(CommandResult.Fail);
         }
 
         private void SendFirstCommandCompletedEventSuccess()
         {
             _lastReceivedData = "";
-            FirstCommandCompletedHandlers(CommandResult.SUCCESS);
+            FirstCommandCompleted(CommandResult.Success);
         }
 
         private  void SendFrame(Frame frameToSend)
@@ -138,7 +136,7 @@ namespace RS485.Master.Serial.Implementation
 
         private void receivedDataHandler(string data, MessageType type)
         {
-            this._lastReceivedData = data;
+            _lastReceivedData = data;
         }
 
         public async void SendSecondCommand(string slaveAddress)
@@ -149,7 +147,7 @@ namespace RS485.Master.Serial.Implementation
             }
             try
             {
-                 _serialPort.OpenConnectionAsync(_connectionSettings);
+                 await _serialPort.OpenConnectionAsync(_connectionSettings);
             }
             catch (Exception e)
             {
@@ -157,15 +155,20 @@ namespace RS485.Master.Serial.Implementation
             }
         }
 
-        public void closePort()
-        {
-            _serialPort.CloseConnectionAsync();
-        }
-
         private void OnLogMessageOccured(LogMessageType logMsgType, string content)
         {
             if (LogMessageOccured != null)
                 LogMessageOccured(new LogMessageOccuredEventArgs(logMsgType, content));
+        }
+
+        private void ClosePort()
+        {
+            _serialPort.CloseConnectionAsync();
+        }
+
+        public void Dispose()
+        {
+            ClosePort();
         }
     }
 }
