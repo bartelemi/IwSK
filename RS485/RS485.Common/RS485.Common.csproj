@@ -72,6 +72,7 @@
     <Compile Include="Exceptions\InvalidChecksumException.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\ScrollViewerExtension.cs" />
+    <Compile Include="Implementation\ByteToHexConverter.cs" />
     <Compile Include="Implementation\FrameBuilder.cs" />
     <Compile Include="Interfaces\IModbusMaster.cs" />
     <Compile Include="Interfaces\IModbusSlave.cs" />

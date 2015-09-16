@@ -13,8 +13,7 @@ namespace RS485.Common.Implementation
     {
         public static Frame buildFrame(string deviceAddress, string message)
         {
-            string LRC = calculateLRC(deviceAddress + message);
-            return new Frame(deviceAddress, message, LRC);
+            return new Frame(deviceAddress, message);
         }
 
         public static Frame mapFromString(string frame)
@@ -31,10 +30,10 @@ namespace RS485.Common.Implementation
             {
                 throw new InvalidChecksumException(lrc_frame + "!=" + lrc_calculated); 
             }
-            return new Frame(deviceAddress, message, lrc_calculated);
+            return new Frame(deviceAddress, message);
         }
 
-          private static string calculateLRC(string input)
+          public static string calculateLRC(string input)
                 {
                     byte[] inputBytes = Encoding.ASCII.GetBytes(input);
                     byte rawOutputLrc = calculateLRConRawData(inputBytes);

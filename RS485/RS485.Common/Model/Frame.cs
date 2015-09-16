@@ -31,16 +31,17 @@ namespace RS485.Common.Model
             get { return this.lrc; }
         }
 
-        public Frame(string deviceAddress, string message, string lrc)
+        public Frame(string deviceAddress, string message)
         {
             this.deviceAddress = normalizeAddress(deviceAddress);
             this.message = message;
-            this.lrc = lrc;
+            this.lrc = FrameBuilder.calculateLRC(this.deviceAddress + this.message);
 
         }
 
         public static string normalizeAddress(string deviceAddress)
         {
+            
             if (deviceAddress.Length == 1)
             {
                 return "00" + deviceAddress;

@@ -65,7 +65,7 @@ namespace RS485.Slave.Serial.Implementation
             try {
                 frame = FrameBuilder.mapFromString(data);
             } catch (Exception e) {
-                OnLogMessageOccured(LogMessageType.Error, e.Message);
+                OnLogMessageOccured(LogMessageType.Error, e.Message + " " + data);
                 return;
             }
             Debug.WriteLine("Received message in slave: " + frame.Message);
