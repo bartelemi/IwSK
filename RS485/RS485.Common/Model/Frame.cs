@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RS485.Common.Implementation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,10 +63,7 @@ namespace RS485.Common.Model
 
         public string getHexForm()
         {
-            byte[] ba = Encoding.Default.GetBytes(deviceAddress + DATA_SEPARATOR + message + DATA_SEPARATOR + lrc);
-            var hexString = BitConverter.ToString(ba);
-            hexString = hexString.Replace("-", "");
-            return hexString;
+            return ToHexConverter.GetHexForm(deviceAddress + message + lrc);
         }
     }
 }

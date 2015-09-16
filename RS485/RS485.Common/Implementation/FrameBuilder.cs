@@ -37,9 +37,8 @@ namespace RS485.Common.Implementation
           private static string calculateLRC(string input)
                 {
                     byte[] inputBytes = Encoding.ASCII.GetBytes(input);
-                    byte[] rawOutputLrc = new byte[1];
-                    rawOutputLrc[0] = calculateLRConRawData(inputBytes);
-                    return ByteToHexConverter.GetHexForm(rawOutputLrc);
+                    byte rawOutputLrc = calculateLRConRawData(inputBytes);
+                    return ToHexConverter.GetHexForm(rawOutputLrc);
                 }
 
           private static byte calculateLRConRawData(byte[] bytes)
