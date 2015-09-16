@@ -32,14 +32,40 @@ namespace RS485.Common.Model
 
         public Frame(string deviceAddress, string message, string lrc)
         {
-            this.deviceAddress = deviceAddress;
+            this.deviceAddress = normalizeAddress(deviceAddress);
             this.message = message;
             this.lrc = lrc;
+
+        }
+
+        public static string normalizeAddress(string deviceAddress)
+        {
+            if (deviceAddress.Length == 1)
+            {
+                return "00" + deviceAddress;
+            } else if (deviceAddress.Length == 2)
+            {
+                return "0" + deviceAddress;
+            }
+            else
+            {
+                return deviceAddress;
+            }
+            
         }
 
         public string getStringToSend()
         {
-            return deviceAddress + DATA_SEPARATOR + message + DATA_SEPARATOR + lrc;
+
+            return deviceAddress + message + lrc;
+        }
+
+        public string getHexForm()
+        {
+            byte[] ba = Encoding.Default.GetBytes(deviceAddress + DATA_SEPARATOR + message + DATA_SEPARATOR + lrc);
+            var hexString = BitConverter.ToString(ba);
+            hexString = hexString.Replace("-", "");
+            return hexString;
         }
     }
 }

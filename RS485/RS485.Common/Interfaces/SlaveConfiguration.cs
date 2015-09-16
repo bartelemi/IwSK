@@ -1,4 +1,5 @@
-﻿namespace RS485.Common.Interfaces
+﻿using RS485.Common.Model;
+namespace RS485.Common.Interfaces
 {
     public class SlaveConfiguration
     {

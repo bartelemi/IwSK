@@ -241,8 +241,16 @@ namespace RS485.Common.Serial
                     _port.Parity = (Parity)connectionSettings.CharacterFormat.ParityControl;
                     _port.StopBits = (StopBits)connectionSettings.CharacterFormat.StopBitsNumber;
                     _port.NewLine = connectionSettings.TerminalString;
-                    _port.ReadTimeout = connectionSettings.ReadTimeout;
-                    _port.WriteTimeout = connectionSettings.WriteTimeout;
+                    if(connectionSettings.ReadTimeout == -1)
+                        _port.ReadTimeout = SerialPort.InfiniteTimeout;
+                     else 
+                        _port.ReadTimeout = connectionSettings.ReadTimeout;
+
+                    if (connectionSettings.WriteTimeout == -1)
+                        _port.WriteTimeout = SerialPort.InfiniteTimeout;
+                    else
+                        _port.WriteTimeout = connectionSettings.WriteTimeout;
+
                     _port.Encoding = Encoding.ASCII;
                     _port.PortName = connectionSettings.PortName;
                 }
@@ -376,7 +384,10 @@ namespace RS485.Common.Serial
                 }
                 catch (TimeoutException tmoutEx)
                 {
-                    throw new InternalErrorException("Przekroczono czas połączenia!");
+                    /*CloseConnectionAsync();
+                    Thread.Sleep(500);
+                    OpenConnectionAsync(connectionSettings);
+                    throw tmoutEx;*/
                 }
                 catch (InvalidOperationException invOpEx)
                 {
@@ -384,7 +395,10 @@ namespace RS485.Common.Serial
                 }
                 catch (IOException ioEx)
                 {
-                    throw new InternalErrorException("Ogólny błąd I/O!");
+                    /*CloseConnectionAsync();
+                    Thread.Sleep(500);
+                    OpenConnectionAsync(connectionSettings);
+                    throw ioEx;*/
                 }
                 catch (Exception ex)
                 {

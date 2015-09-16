@@ -140,9 +140,17 @@
       <Project>{2E547B16-6935-4452-A18B-D8342D446FCA}</Project>
       <Name>RS485.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RS485.Integration.Tests\RS485.Integration.Tests.csproj">
+      <Project>{6d3fe5b3-d431-4710-b05e-31290da9767c}</Project>
+      <Name>RS485.Integration.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RS485.Master.Serial\RS485.Master.Serial.csproj">
       <Project>{567FECF7-0E34-41C8-8E74-945DB28B21C6}</Project>
       <Name>RS485.Master.Serial</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RS485.Slave.Serial\RS485.Slave.Serial.csproj">
+      <Project>{48d7eded-5495-44e9-b3ce-b675e7d1b921}</Project>
+      <Name>RS485.Slave.Serial</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

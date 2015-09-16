@@ -49,8 +49,7 @@ namespace RS485.Master.Serial.Implementation
             catch (Exception e)
             {
                 OnLogMessageOccured(LogMessageType.Error, e.Message);
-                Debug.WriteLine(e.Message);
-                Debug.WriteLine(e.StackTrace);
+                throw e;
             }
 
         }
@@ -58,49 +57,56 @@ namespace RS485.Master.Serial.Implementation
         public void SendFirstCommand(string slaveAddress, string message)
         {
             int retransmissionsLeft = _modbusSettings.RetransmissionsCount;
-            Frame frameToSend = FrameBuilder.buildFrame(slaveAddress, message);
-            Debug.WriteLine("MAster: Frame builded: " + frameToSend.getStringToSend());
+            Frame frameToSend = FrameBuilder.buildFrame(slaveAddress, "1"+message);
 
-            do
+            if (slaveAddress.Equals("000"))
             {
-                _currentTransaction = new Transaction(_modbusSettings.TransactionDuration);
-                try
+                SendFrame(frameToSend);
+                SendFirstCommandCompletedEventSuccess();
+            }
+            else
+            {
+                do
                 {
-                    SendFrame(frameToSend);
-                }
-                catch (Exception e)
-                {
-                    OnLogMessageOccured(LogMessageType.Error, e.Message);
-                    Debug.WriteLine(e.Message);
-                    Debug.WriteLine(e.StackTrace);
-                    return;
-                }
-                while (_currentTransaction.isTransactionStillActive())
-                {
-                    Debug.WriteLine("Master: Transaction still active, wait for receive");
-                    if (IsFrameSendSuccess())
+                    _currentTransaction = new Transaction(_modbusSettings.TransactionDuration);
+                    try
                     {
-                        Debug.WriteLine("Master: Received some data: " + _lastReceivedData);
-                        if (_lastReceivedData.Equals(CommandResult.Success.ToString()))
-                        {
-                            Debug.WriteLine("MAster: Transmission success!");
-                            SendFirstCommandCompletedEventSuccess();
-                            return;
-                        }
-
-                        Debug.WriteLine("Master: Transmission fail, wrong ACK!");
-                        SendFirstCommandCompletedEventFail();
+                        SendFrame(frameToSend);
+                    }
+                    catch (Exception e)
+                    {
+                        OnLogMessageOccured(LogMessageType.Error, e.Message);
+                        Debug.WriteLine(e.Message);
+                        Debug.WriteLine(e.StackTrace);
                         return;
                     }
-                    Thread.Sleep(5);
-                }
-                Debug.WriteLine("Master: transaction timeout, decrease retransmission");
-                retransmissionsLeft--;
+                    while (_currentTransaction.isTransactionStillActive())
+                    {
+                        Debug.WriteLine("Master: Transaction still active, wait for receive");
+                        if (IsFrameSendSuccess())
+                        {
+                            Debug.WriteLine("Master: Received some data: " + _lastReceivedData);
+                            if (_lastReceivedData.Equals(CommandResult.Success.ToString()))
+                            {
+                                Debug.WriteLine("MAster: Transmission success!");
+                                SendFirstCommandCompletedEventSuccess();
+                                return;
+                            }
 
-            } while (retransmissionsLeft > 0);
+                            Debug.WriteLine("Master: Transmission fail, wrong ACK!");
+                            SendFirstCommandCompletedEventFail();
+                            return;
+                        }
+                        Thread.Sleep(5);
+                    }
+                    Debug.WriteLine("Master: transaction timeout, decrease retransmission");
+                    retransmissionsLeft--;
 
-            Debug.WriteLine("Master: Communication fail, no ACK received");
-            SendFirstCommandCompletedEventFail();
+                } while (retransmissionsLeft > 0);
+
+                Debug.WriteLine("Master: Communication fail, no ACK received");
+                SendFirstCommandCompletedEventFail();
+            }
         }
 
         private void SendFirstCommandCompletedEventFail()

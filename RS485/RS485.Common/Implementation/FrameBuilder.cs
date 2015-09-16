@@ -18,14 +18,13 @@ namespace RS485.Common.Implementation
 
         public static Frame mapFromString(string frame)
         {
-            String[] splitted = frame.Split(Frame.DATA_SEPARATOR.ToCharArray());
-            if (splitted.Length != 3)
+            if (frame.Length < 5)
             {
-                throw new InvalidOperationException("Cannot read frame from string: " + frame);
+                throw new InvalidOperationException("Cannot read frame from string: " + frame + " too short frame");
             }
-            string deviceAddress = splitted[0];
-            string message = splitted[1];
-            string lrc_frame = splitted[2];
+            string deviceAddress = frame.Substring(0, 3);
+            string message = frame.Substring(3, frame.Length - 5);
+            string lrc_frame = frame.Substring(frame.Length - 2, 2);
             string lrc_calculated = calculateLRC(deviceAddress + message);
             if (!lrc_frame.Equals(lrc_calculated))
             {
@@ -34,21 +33,12 @@ namespace RS485.Common.Implementation
             return new Frame(deviceAddress, message, lrc_calculated);
         }
 
-        private static string calculateLRC(string input)
+        private static string calculateLRC(string str)
         {
-            byte[] inputBytes = Encoding.ASCII.GetBytes(input);
-            byte[] rawOutputLrc = new byte[1];
-            rawOutputLrc[0] = calculateLRConRawData(inputBytes);
-            return Encoding.ASCII.GetString(rawOutputLrc);
+           //TODO FIXME!
+            return "FF";
         }
-        private static byte calculateLRConRawData(byte[] bytes)
-        {
-            byte LRC = 0;
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                LRC ^= bytes[i];
-            }
-            return LRC;
-        }
+        
+       
     }
 }

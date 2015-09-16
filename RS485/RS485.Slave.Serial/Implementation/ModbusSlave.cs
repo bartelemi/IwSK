@@ -5,6 +5,7 @@ using RS485.Common.GuiCommon.Models.EventArgs;
 using RS485.Common.Model;
 using RS485.Common.Serial;
 using System.Diagnostics;
+using RS485.Common.Implementation;
 
 namespace RS485.Slave.Serial.Implementation
 {
@@ -23,6 +24,7 @@ namespace RS485.Slave.Serial.Implementation
             _connectionSettings = settings;
             _slaveConfig = config;
             _serialPort.OnDataReceived += SerialDataReceived;
+
         }
 
         public void SetConnectionSettings(ConnectionSettings settings)
@@ -40,14 +42,13 @@ namespace RS485.Slave.Serial.Implementation
             try
             {
                 _serialPort.OpenConnectionAsync(_connectionSettings);
-                Debug.WriteLine("Port opened");
             }
             catch (Exception e)
             {
                 OnLogMessageOccured(LogMessageType.Error, e.Message);
-                Debug.WriteLine(e.Message);
-                Debug.WriteLine(e.StackTrace);
+                throw e;
             }
+            Debug.WriteLine("Slave port opened");
         }
 
         private void OnLogMessageOccured(LogMessageType logMsgType, string content)
@@ -60,12 +61,70 @@ namespace RS485.Slave.Serial.Implementation
 
         public void SerialDataReceived(string data, MessageType type)
         {
-            Debug.WriteLine("Slave received: " + data);
+            Frame frame;
+            try {
+                frame = FrameBuilder.mapFromString(data);
+            } catch (Exception e) {
+                OnLogMessageOccured(LogMessageType.Error, e.Message);
+                return;
+            }
+            Debug.WriteLine("Received message in slave: " + frame.Message);
+            LogMessageOccured(new LogMessageOccuredEventArgs(LogMessageType.Info, "Hex frame: " + frame.getHexForm()));
+            switch(dispatchOperation(frame)) {
+                case SlavePossibleStates.COMMAND_1 :
+                    command1Handler(frame);
+                    break;
+                case SlavePossibleStates.COMMAND_2 :
+                    command2Handler(frame);
+                    break;
+            }
+        }
+
+        private SlavePossibleStates dispatchOperation(Frame frame)
+        {
+            if (frame.Message.StartsWith("1"))
+            {
+                return SlavePossibleStates.COMMAND_1;
+            }
+            else
+            {
+                return SlavePossibleStates.COMMAND_2;
+            }
+        }
+
+        private async void command1Handler(Frame frame)
+        {
+            if (frame.DeviceAddress.Equals("000") || frame.DeviceAddress.Equals(Frame.normalizeAddress(_slaveConfig.SlaveAddress.ToString())))
+            {
+                await _serialPort.SendMessageAsync(CommandResult.Success.ToString());
+                FirstCommandReceived(frame.Message.Substring(1));
+            }
+        }
+
+        private void command2Handler(Frame frame)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+
+
+        private void ClosePort()
+        {
+            _serialPort.CloseConnectionAsync();
         }
 
         public void Dispose()
         {
-            
+            ClosePort();
         }
+
+    }
+
+    public enum SlavePossibleStates {
+        COMMAND_1,
+        COMMAND_2,
+        WRONG_ADDRESS
     }
 }
