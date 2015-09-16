@@ -34,6 +34,7 @@ namespace RS485.Common.Implementation
             return new Frame(deviceAddress, message, lrc_calculated);
         }
 
+
         private static string calculateLRC(string input)
         {
             byte[] inputBytes = Encoding.ASCII.GetBytes(input);
@@ -46,8 +47,10 @@ namespace RS485.Common.Implementation
             byte LRC = 0;
             for (int i = 0; i < bytes.Length; i++)
             {
-                LRC ^= bytes[i];
+                LRC += bytes[i];
             }
+            LRC = (byte)(0xFF - LRC);
+            LRC += 1;
             return LRC;
         }
     }
