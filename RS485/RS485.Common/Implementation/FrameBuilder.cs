@@ -18,9 +18,9 @@ namespace RS485.Common.Implementation
 
         public static Frame mapFromString(string frame)
         {
-            if (frame.Length < 5)
+            if (frame.Length < 6)
             {
-                throw new InvalidOperationException("Cannot read frame from string: " + frame + " too short frame");
+                throw new InvalidOperationException("Cannot read frame from string: " + frame + " too short frame or empty");
             }
             string deviceAddress = frame.Substring(0, 3);
             string message = frame.Substring(3, frame.Length - 5);

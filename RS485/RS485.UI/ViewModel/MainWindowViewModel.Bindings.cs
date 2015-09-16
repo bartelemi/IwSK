@@ -56,6 +56,10 @@ namespace RS485.UI.ViewModel
             set
             {
                 _inputSlave = value;
+                if (_modbusSlave != null)
+                {
+                    _modbusSlave.SetSlaveConfiguration(SpawnSlaveConfig(SlaveStationAddress, value));
+                }
                 OnPropertyChanged();
 
             }
@@ -175,6 +179,7 @@ namespace RS485.UI.ViewModel
             set
             {
                 _outputSlave = value;
+               
                 OnPropertyChanged();
             }
         }

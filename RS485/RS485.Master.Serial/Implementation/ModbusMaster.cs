@@ -83,7 +83,7 @@ namespace RS485.Master.Serial.Implementation
                     while (_currentTransaction.isTransactionStillActive())
                     {
                         Debug.WriteLine("Master: Transaction still active, wait for receive");
-                        if (IsFrameSendSuccess())
+                        if (IsFrameSendSuccessFirstCommand())
                         {
                             Debug.WriteLine("Master: Received some data: " + _lastReceivedData);
                             if (_lastReceivedData.Equals(CommandResult.Success.ToString()))
@@ -135,7 +135,7 @@ namespace RS485.Master.Serial.Implementation
             
         }
 
-        private bool IsFrameSendSuccess()
+        private bool IsFrameSendSuccessFirstCommand()
         {
             return (!_lastReceivedData.Equals("ERROR")) & _lastReceivedData.Length > 1;
         }
@@ -151,14 +151,56 @@ namespace RS485.Master.Serial.Implementation
             {
                 throw new InvalidArgumentException("Operacja nr. 2 może być realizowana tylko dla transmisji adresowanej!");
             }
+
+            int retransmissionsLeft = _modbusSettings.RetransmissionsCount;
+            Frame frameToSend = FrameBuilder.buildFrame(slaveAddress, "2");
+
+                do
+                {
+                    _currentTransaction = new Transaction(_modbusSettings.TransactionDuration);
+                    try
+                    {
+                        SendFrame(frameToSend);
+                    }
+                    catch (Exception e)
+                    {
+                        OnLogMessageOccured(LogMessageType.Error, e.Message);
+                        Debug.WriteLine(e.Message);
+                        Debug.WriteLine(e.StackTrace);
+                        return;
+                    }
+                    while (_currentTransaction.isTransactionStillActive())
+                    {
+                        Debug.WriteLine("Master: Transaction still active, wait for receive");
+                        if (isTransactionSuccessSecondCommand())
+                        {
+                            Debug.WriteLine("Master: Received some data: " + _lastReceivedData);
+                            Frame receivedFrame = FrameBuilder.mapFromString(_lastReceivedData);
+                            SecondCommandCompleted(CommandResult.Success, receivedFrame.Message);
+                            return;
+                        }
+                        Thread.Sleep(5);
+                    }
+                    Debug.WriteLine("Master: transaction timeout, decrease retransmission");
+                    retransmissionsLeft--;
+
+                } while (retransmissionsLeft > 0);
+
+                Debug.WriteLine("Master: Communication fail, no response");
+                SecondCommandCompleted(CommandResult.Fail, "");
+        }
+
+        private bool isTransactionSuccessSecondCommand()
+        {
             try
             {
-                 await _serialPort.OpenConnectionAsync(_connectionSettings);
+                Frame frame = FrameBuilder.mapFromString(_lastReceivedData);
             }
             catch (Exception e)
             {
-                OnLogMessageOccured(LogMessageType.Error, e.Message);
+                return false;
             }
+            return true;
         }
 
         private void OnLogMessageOccured(LogMessageType logMsgType, string content)

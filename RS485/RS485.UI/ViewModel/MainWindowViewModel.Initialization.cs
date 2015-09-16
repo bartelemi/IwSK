@@ -8,7 +8,8 @@ namespace RS485.UI.ViewModel
             {
                 ModbusMaster.LogMessageOccured += LogMessageReceived;
                 ModbusMaster.FirstCommandCompleted += FirstCommandCompletedMaster;
-                // TODO - other events
+                ModbusMaster.SecondCommandCompleted += SecondCommandCompletedMaster;
+                
             }
         }
 
@@ -18,7 +19,7 @@ namespace RS485.UI.ViewModel
             {
                 ModbusSlave.LogMessageOccured += LogMessageReceived;
                 ModbusSlave.FirstCommandReceived += FirstCommandReceivedSlave;
-                // TODO - other events
+                ModbusSlave.SecondCommandResponseSent += SecondCommandCompletedSlave;
             }
         }
 
@@ -28,7 +29,7 @@ namespace RS485.UI.ViewModel
             {
                 ModbusMaster.LogMessageOccured -= LogMessageReceived;
                 ModbusMaster.FirstCommandCompleted -= FirstCommandCompletedMaster;
-                // TODO - other events
+                ModbusMaster.SecondCommandCompleted -= SecondCommandCompletedMaster;
 
                 ModbusMaster.Dispose();
             }
@@ -39,7 +40,8 @@ namespace RS485.UI.ViewModel
             if (ModbusSlave != null)
             {
                 ModbusSlave.LogMessageOccured -= LogMessageReceived;
-                // TODO - other events
+                ModbusSlave.FirstCommandReceived -= FirstCommandReceivedSlave;
+                ModbusSlave.SecondCommandResponseSent -= SecondCommandCompletedSlave;
 
                 ModbusSlave.Dispose();
             }

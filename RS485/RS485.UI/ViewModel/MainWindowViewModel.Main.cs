@@ -119,7 +119,6 @@ namespace RS485.UI.ViewModel
 
         private void ExecuteModbusRequest()
         {
-            // TODO fixme! only for tests
             Debug.WriteLine("Send command!");
             switch (CommandMode)
             {
@@ -149,13 +148,30 @@ namespace RS485.UI.ViewModel
         private void FirstCommandCompletedMaster(CommandResult result)
         {
             OutputTextBoxContent += "OPERATION STATUS: " + result.ToString() + "\n";
-            OutputSlave = result.ToString();
             ConnectionState = Common.Model.ConnectionState.Connected;
         }
 
         private void FirstCommandReceivedSlave(String message)
         {
             OutputTextBoxContent += "RECEIVED FROM MASTER: " + message.ToString() + "\n";
+            OutputSlave = message;
+        }
+
+        private void SecondCommandCompletedMaster(CommandResult result, String message)
+        {
+            OutputTextBoxContent += "OPERATION STATUS: " + result.ToString() + "\n";
+            if (result == CommandResult.Success)
+            {
+                OutputTextBoxContent += "Received from slave: " + message + "\n";
+                OutputMaster = message;
+            }
+            ConnectionState = Common.Model.ConnectionState.Connected;
+        }
+
+        private void SecondCommandCompletedSlave()
+        {
+            ConnectionState = Common.Model.ConnectionState.Connected;
+            OutputTextBoxContent += "SENT DATA TO MASTER \n";
         }
 
         /// <summary>

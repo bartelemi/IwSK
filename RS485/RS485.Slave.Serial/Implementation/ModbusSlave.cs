@@ -94,16 +94,27 @@ namespace RS485.Slave.Serial.Implementation
 
         private async void command1Handler(Frame frame)
         {
-            if (frame.DeviceAddress.Equals("000") || frame.DeviceAddress.Equals(Frame.normalizeAddress(_slaveConfig.SlaveAddress.ToString())))
+            if (frame.DeviceAddress.Equals("000") || isMyAddressInFrame(frame))
             {
                 await _serialPort.SendMessageAsync(CommandResult.Success.ToString());
                 FirstCommandReceived(frame.Message.Substring(1));
             }
         }
 
+        private bool isMyAddressInFrame(Frame frame)
+        {
+            return frame.DeviceAddress.Equals(Frame.normalizeAddress(_slaveConfig.SlaveAddress.ToString()));
+        }
+
         private void command2Handler(Frame frame)
         {
-            throw new NotImplementedException();
+            if (isMyAddressInFrame(frame))
+            {
+                Frame toMaster = FrameBuilder.buildFrame("248", _slaveConfig.TextSendBackToMaster);
+                Debug.WriteLine("Sent to masteR: " + _slaveConfig.TextSendBackToMaster);
+                _serialPort.SendMessageAsync(toMaster.getStringToSend());
+                SecondCommandResponseSent();
+            }
         }
 
 
