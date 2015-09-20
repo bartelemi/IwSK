@@ -100,7 +100,7 @@ namespace RS485.UI.ViewModel
         {
             if(ModbusMaster != null)
                 DisposeMaster();
-            ModbusMaster = new ModbusMaster(SpawnConnectionSettings(SelectedPortName), SpawnModbusSettings(NumberOfRetransmission, TimeoutRetransmission));
+            ModbusMaster = new ModbusMaster(SpawnConnectionSettings(SelectedPortName), SpawnModbusSettings(NumberOfRetransmission, MaxDelayBetweenData));
             ConnectionState = Common.Model.ConnectionState.Connected;
            
 

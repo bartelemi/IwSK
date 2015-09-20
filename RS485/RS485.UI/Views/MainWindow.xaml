@@ -60,10 +60,10 @@
                                 <TextBox Margin="0 0 0 5"
                                          PreviewTextInput="Textbox_OnPreviewTextInput"
                                          Text="{Binding TimeoutTransmission}" />
-                                <TextBlock Text="Timeout retransmisji" />
+                                <TextBlock Text="Maksymalny odstęp pomiędzy znakami" />
                                 <TextBox Margin="0 0 0 5"
                                          PreviewTextInput="Textbox_OnPreviewTextInput"
-                                         Text="{Binding TimeoutRetransmission}" />
+                                         Text="{Binding MaxDelayBetweenData}" />
                                 <TextBlock Text="Liczba retransmisji" />
                                 <TextBox PreviewTextInput="Textbox_OnPreviewTextInput" Text="{Binding NumberOfRetransmission}" />
                                 <Button Margin="20"
@@ -147,7 +147,7 @@
                                 <TextBox Margin="0 0 0 5"
                                          PreviewTextInput="Textbox_OnPreviewTextInput"
                                          Text="{Binding SlaveStationAddress}" />
-                                <TextBlock Text="Timeout transmisji" />
+                                <TextBlock Text="Maksymalny odstęp pomiędzy znakami" />
                                 <TextBox PreviewTextInput="Textbox_OnPreviewTextInput" Text="{Binding TimeoutTransmission}" />
                                 <Button Margin="20"
                                         Command="{Binding ConnectToModbusCommand}"
