@@ -11,7 +11,7 @@ namespace RS485.UI.ViewModel
             _commandMode = CommandMode.One;
             _transactionType = TransactionType.Broadcast;
             _slaveStationAddress = 123;
-            _timeoutRetransmission = 500;
+            _maxDelayBetweenData = 500;
             _timeoutTransmission = 500;
             _numberOfRetransmission = 2;
         }
@@ -137,16 +137,16 @@ namespace RS485.UI.ViewModel
         }
         private int _timeoutTransmission;
 
-        public int TimeoutRetransmission
+        public int MaxDelayBetweenData
         {
-            get { return _timeoutRetransmission; }
+            get { return _maxDelayBetweenData; }
             set
             {
-                _timeoutRetransmission = value;
+                _maxDelayBetweenData = value;
                 OnPropertyChanged();
             }
         }
-        private int _timeoutRetransmission;
+        private int _maxDelayBetweenData;
 
         public int NumberOfRetransmission
         {

@@ -77,7 +77,7 @@
                                         Maximum="1000"
                                         Minimum="0"
                                         TickFrequency="10"
-                                        Value="{Binding TimeoutRetransmission}" />
+                                        Value="{Binding MaxDelayBetweenData}" />
                                 <TextBlock Text="Liczba retransmisji" />
                                 <TextBox IsReadOnly="True" Text="{Binding ElementName=RetransmisionsCountSlider, Path=Value}" />
                                 <Slider x:Name="RetransmisionsCountSlider"
@@ -175,7 +175,7 @@
                                         Maximum="1000"
                                         Minimum="0"
                                         TickFrequency="10"
-                                        Value="{Binding TimeoutRetransmission}" />
+                                        Value="{Binding MaxDelayBetweenData}" />
                                 <Button Margin="20"
                                         Command="{Binding ConnectToModbusCommand}"
                                         CommandParameter="{x:Static model:MasterSlave.Slave}"
