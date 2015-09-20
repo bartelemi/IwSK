@@ -8,8 +8,10 @@
         xmlns:model="clr-namespace:RS485.Common.Model;assembly=RS485.Common"
         xmlns:vm="clr-namespace:RS485.UI.ViewModel"
         Title="RS485"
-        Width="832"
-        Height="480.25"
+        Width="830"
+        MinWidth="830"
+        Height="550" 
+        MinHeight="550"
         Icon="../Resources/icon.png"
         d:DataContext="{d:DesignInstance vm:MainWindowViewModel,
                                          IsDesignTimeCreatable=True}"
@@ -36,8 +38,8 @@
         </Grid>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TabControl Grid.Row="0">
                 <TabItem Header="Master">
@@ -219,7 +221,6 @@
                 </TabItem>
             </TabControl>
             <GroupBox Grid.Row="1"
-                      Height="150"
                       Header="Logs"
                       Padding="3">
                 <TextBox x:Name="OutputTextBox"
