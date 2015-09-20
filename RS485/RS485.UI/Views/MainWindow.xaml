@@ -56,16 +56,34 @@
                                 <ComboBox Margin="0 0 0 5"
                                           ItemsSource="{Binding SerialPortNames}"
                                           SelectedValue="{Binding SelectedPortName}" />
-                                <TextBlock Text="Timeout transmisji" />
+                                <TextBlock Text="Timeout transmisji [ms]" />
                                 <TextBox Margin="0 0 0 5"
-                                         PreviewTextInput="Textbox_OnPreviewTextInput"
-                                         Text="{Binding TimeoutTransmission}" />
-                                <TextBlock Text="Timeout retransmisji" />
+                                         IsReadOnly="True"
+                                         Text="{Binding ElementName=TimeoutTransmissionSlider,
+                                                        Path=Value}" />
+                                <Slider x:Name="TimeoutTransmissionSlider"
+                                        IsSnapToTickEnabled="True"
+                                        Maximum="10000"
+                                        Minimum="0"
+                                        TickFrequency="100"
+                                        Value="{Binding TimeoutTransmission}" />
+                                <TextBlock Text="Maksymalny odstęp pomiędzy znakami [ms]" />
                                 <TextBox Margin="0 0 0 5"
-                                         PreviewTextInput="Textbox_OnPreviewTextInput"
-                                         Text="{Binding TimeoutRetransmission}" />
+                                         IsReadOnly="True"
+                                         Text="{Binding ElementName=TimeoutRetransmissionMasterSlider,
+                                                        Path=Value}" />
+                                <Slider x:Name="TimeoutRetransmissionMasterSlider"
+                                        IsSnapToTickEnabled="True"
+                                        Maximum="1000"
+                                        Minimum="0"
+                                        TickFrequency="10"
+                                        Value="{Binding TimeoutRetransmission}" />
                                 <TextBlock Text="Liczba retransmisji" />
-                                <TextBox PreviewTextInput="Textbox_OnPreviewTextInput" Text="{Binding NumberOfRetransmission}" />
+                                <TextBox IsReadOnly="True" Text="{Binding ElementName=RetransmisionsCountSlider, Path=Value}" />
+                                <Slider x:Name="RetransmisionsCountSlider"
+                                        Maximum="5"
+                                        Minimum="0"
+                                        Value="{Binding NumberOfRetransmission}" />
                                 <Button Margin="20"
                                         Command="{Binding ConnectToModbusCommand}"
                                         CommandParameter="{x:Static model:MasterSlave.Master}"
@@ -147,8 +165,17 @@
                                 <TextBox Margin="0 0 0 5"
                                          PreviewTextInput="Textbox_OnPreviewTextInput"
                                          Text="{Binding SlaveStationAddress}" />
-                                <TextBlock Text="Timeout transmisji" />
-                                <TextBox PreviewTextInput="Textbox_OnPreviewTextInput" Text="{Binding TimeoutTransmission}" />
+                                <TextBlock Text="Maksymalny odstęp pomiędzy znakami [ms]" />
+                                <TextBox Margin="0 0 0 5"
+                                         IsReadOnly="True"
+                                         Text="{Binding ElementName=TimeoutRetransmissionSlaveSlider,
+                                                        Path=Value}" />
+                                <Slider x:Name="TimeoutRetransmissionSlaveSlider"
+                                        IsSnapToTickEnabled="True"
+                                        Maximum="1000"
+                                        Minimum="0"
+                                        TickFrequency="10"
+                                        Value="{Binding TimeoutRetransmission}" />
                                 <Button Margin="20"
                                         Command="{Binding ConnectToModbusCommand}"
                                         CommandParameter="{x:Static model:MasterSlave.Slave}"
